@@ -1,0 +1,50 @@
+{% extends "pi_monitor/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% load extra_tags %}
+{% load humanize %}
+{% block head %}
+<title>{{jurisdiction.name}} - {{year.display}}</title>
+{% endblock %}
+{% block content %}
+    
+
+<h1 class="text-center">{{jurisdiction.name}} - {{year.display}}</h1>
+
+
+<ul class="nav nav-tabs">
+    {% for y in years %}
+    <li role="presentation" {% if year == y %}class="active"{% endif %}><a href="{% url "pi.year" jurisdiction.slug y.slug %}">{{y.display}}</a></li>
+    {% endfor %}
+</ul>
+
+	<hr>
+	<p>{% if year.display != 'All time' %}In {{year.display}}{% else %}All time{% endif %}, there were <b>{{stats.PI_ALL.value|int|intcomma}}</b> public information requests sent to <b>{{relevant_auths}}</b> authorities.  </p>
+	
+	<p>The median authority received <b>{{median|int}}</b> requests. The authority with the highest received <b>{{max|int}}</b> requests.</p>
+	{% if "EIR_ALL" in stats %}
+	<p><b>{{stats.EIR_ALL.display_percent|int}}%</b> of public information requests were made under enviromental information law. </p>
+	{% endif %}
+	{% if "SAR_ALL" in stats %}
+	<p>There were <b>{{stats.SAR_ALL.value|int|intcomma}}</b> subject access requests made.</p>
+	{% endif %}
+	{% if "WDTK_ALL" in stats %}
+	<p><b>{{stats.WDTK_ALL.display_percent|int}}%</b> of requests were sent from WhatDoTheyKnow. </p>
+	{% endif %}
+	
+	<hr>
+	<h2>Public information requests by sector</h2>
+	{{sector_chart}}
+	<h2>By sector</h2>
+	{{sector_table}}
+	<h2>By authority</h2>
+	{{bodies_table}}
+
+    {{chart}}
+    <br>
+    {{table}}   
+
+{% endblock %}
+{% block code %}
+	{{chart_collection.render_code}}  
+{% endblock %}

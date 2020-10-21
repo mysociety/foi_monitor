@@ -1,0 +1,115 @@
+id,value,child_of,combo_of,special,description
+1,All requests,,*children*,ALL,
+2,Public Information Requests,All requests,,PI_ALL,
+3,FOISA requests,Public Information Requests,,FOI_ALL,
+4,FOISA closed - unclear,FOISA requests,,,
+5,FOISA closed - withdrawn,FOISA requests,,,
+6,FOISA fees notice,FOISA requests,,,
+7,FOISA - fees paid,FOISA requests,,,
+8,FOISA response on time,FOISA requests,,,
+9,FOISA response late,FOISA requests,,,
+10,FOISA - faliure to respond,FOISA requests,,,
+11,FOISA refused - cost,FOISA requests,,,
+12,FOISA - vexatious,FOISA requests,,,
+13,FOISA - repeated,FOISA requests,,,
+14,FOISA - full release,FOISA requests,,FOI_FULL,
+15,FOISA - none released,FOISA requests,,,
+16,FOISA - some released,FOISA requests,,,
+17,FOISA - none held ,FOISA requests,,,
+18,FOISA - no confirm/deny,FOISA requests,,,
+19,EIR requests,Public Information Requests,,EIR_ALL,
+20,EIR closed - unclear ,EIR requests,,,
+21,EIR closed - withdrawn,EIR requests,,,
+22,EIRs fees notice,EIR requests,,,
+23,EIRs - fees paid,EIR requests,,,
+24,EIRs response on time,EIR requests,,,
+25,EIRs response late,EIR requests,,,
+26,EIRs - failure to respond,EIR requests,,,
+27,EIR timescale extended,EIR requests,,,
+28,EIRs refused - cost,EIR requests,,,
+29,EIRs - manifestly unreasonable,EIR requests,,,
+30,EIRs - full release,EIR requests,,EIR_FULL,
+31,EIRs - none released ,EIR requests,,,
+32,EIRs - some released,EIR requests,,,
+33,EIRs - none held,EIR requests,,,
+34,EIRs - no confirm/deny,EIR requests,,,
+35,Subject Access Requests,All requests,,SAR_ALL,
+36,FOISA reviews ,FOISA requests,,,
+37,FOISA review - on time,FOISA reviews ,,,
+38,FOISA review - late response,FOISA reviews ,,,
+39,FOISA review - failure to respond,FOISA reviews ,,,
+40,FOISA review - wholly/partially upheld,FOISA reviews ,,,
+41,FOISA review - substituted decision,FOISA reviews ,,,
+42,FOISA review - decision reached ,FOISA reviews ,,,
+43,EIRs reviews,EIR requests,,,
+44,EIRs review - on time,EIRs reviews,,,
+45,EIRs review - late response ,EIRs reviews,,,
+46,EIRs review - failure to respond,EIRs reviews,,,
+47,EIR review - upheld,EIRs reviews,,,
+48,EIR review - not upheld,EIRs reviews,,,
+49,FOISA Exemption,,*children*,,
+50,EIR Exception,,*children*,,
+51,Otherwise accessible,FOISA Exemption,,,25(1)
+52,Publication Scheme,FOISA Exemption,,,25(3)
+53,Disclosure prohibited: enactment,FOISA Exemption,,,26(a)
+54,Disclosure prohibited: EU obligation,FOISA Exemption,,,26(b)
+55,Disclosure prohibited: Contempt of Court,FOISA Exemption,,,26(c)
+56,Future publication: 12 weeks,FOISA Exemption,,,27(1)
+57,Future publication: programme of research,FOISA Exemption,,,27(2)
+58,Substantial prejudice to UK relations ,FOISA Exemption,,,28
+59,Formulation/development of government policy,FOISA Exemption,,,29(1)(a)
+60,Ministerial communications,FOISA Exemption,,,29(1)(b)
+61,Advice by Law Officers,FOISA Exemption,,,29(1)(c)
+62,Operation of Ministerial private office,FOISA Exemption,,,29(1)(d)
+63,Substantial prejudice to collective responsibility of Scottish Ministers,FOISA Exemption,,,30(a)
+64,Substantial inhibition to free and frank provision of advice,FOISA Exemption,,,30(b)(i)
+65,Substantial inhibition to free and frank exchange of views,FOISA Exemption,,,30(b)(ii)
+66,Substantial prejudice to effective conduct of public affairs,FOISA Exemption,,,30(c)
+67,National security,FOISA Exemption,,,31(1)
+68,Substantial prejudice to defence ,FOISA Exemption,,,31(4)
+69,Substantial prejudice to international relations,FOISA Exemption,,,32(1)(a)
+70,Confidential information obtained from abroad,FOISA Exemption,,,32(1)(b)
+71,Trade secret,FOISA Exemption,,,33(1)(a)
+72,Substantial prejudice to commercial interests,FOISA Exemption,,,33(1)(b)
+73,Substantial prejudice to the economic interests of the UK,FOISA Exemption,,,33(2)(a)
+74,Substantial prejudice to the financial interests of a UK administration,FOISA Exemption,,,33(2)(b)
+75,Information held for the purposes of a criminal investigation,FOISA Exemption,,,34(1)
+76,Information held for ongoing Fatal Accident Inquiry,FOISA Exemption,,,34(2)(a)
+77,Information held regarding cause of death,FOISA Exemption,,,34(2)(b)
+78,Information relating to the obtaining of information from confidential sources,FOISA Exemption,,,34(3)
+79,Information held for purposes of civil proceedings arising out of investigations,FOISA Exemption,,,34(4)
+80,Substantial prejudice to prevention or detection of crime,FOISA Exemption,,,35(1)(a)
+81,Substantial prejudice to apprehension or prosecution of offenders,FOISA Exemption,,,35(1)(b)
+82,Substantial prejudice to administration of justice,FOISA Exemption,,,35(1)(c)
+83,Substantial prejudice to assessment or collection of tax or duty,FOISA Exemption,,,35(1)(d)
+84,Substantial prejudice to operation of immigration controls,FOISA Exemption,,,35(1)(e)
+85,Substantial prejudice to maintenance of security and good order in prisons,FOISA Exemption,,,35(1)(f)
+86,Substantial prejudice to the exercise by a public authority for any of its functions,FOISA Exemption,,,35(1)(g)
+87,Substantial prejudice to civil proceedings brought by an authority,FOISA Exemption,,,35(1)(h)
+88,Confidentiality of communications,FOISA Exemption,,,36(1)
+89,Actionable breach of confidence,FOISA Exemption,,,36(2)
+90,Court records,FOISA Exemption,,,37(1)(a)
+91,Court records: inquiry or arbitration,FOISA Exemption,,,37(1)(b)
+92,Personal data of the applicant - FOI,FOISA Exemption,,,38(1)(a)
+93,Third party personal data - FOI,FOISA Exemption,,,38(1)(b)
+94,Personal census information,FOISA Exemption,,,38(1)(c)
+95,Deceased person's health record,FOISA Exemption,,,38(1)(d)
+96,Endangerment to health or safety,FOISA Exemption,,,39(1)
+97,Environmental information ,FOISA Exemption,,,39(2)
+98,Substantial prejudice to audit function,FOISA Exemption,,,40(a)/(b)
+99,Communications with the Royal Family and honours,FOISA Exemption,,,41(a)/(b)
+100,Material in course of completion,EIR Exception,,,10(4)(d)
+101,Internal Communications,EIR Exception,,,10(4)(e)
+102,Substantial prejudice to international relations public safety etc.,EIR Exception,,,10(5)(a)
+103,Substantial prejudice to course of justice etc.,EIR Exception,,,10(5)(b)
+104,Substantial prejudice to intellectual property rights,EIR Exception,,,10(5)(c)
+105,Substantial prejudice to confidentiality of proceedings,EIR Exception,,,10(5)(d)
+106,Substantial prejudice to confidentiality of commercial or industrial information ,EIR Exception,,,10(5)(e)
+107,Substantial prejudice to the interests of a third party,EIR Exception,,,10(5)(f)
+108,Substantial prejudice to the protection of the environment,EIR Exception,,,10(5)(g)
+109,Neither confirm nor deny whether environmental information held,EIR Exception,,,10(8) 
+110,Personal data of the applicant - EIR,EIR Exception,,,11(1)
+111,Third party personal data - EIR,EIR Exception,,,11(2) 
+112,Neither confirm or deny whether personal data held,EIR Exception,,,11(6)
+113,WDTK FOI requests,Public Information Requests,,WDTK_ALL,
+114,Public Information Requests - full release,All requests,,PI_FULL,

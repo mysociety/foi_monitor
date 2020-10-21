@@ -1,0 +1,28 @@
+    <nav class=" navbar navbar-inverse navbar-fixed-top navbar-font" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-font navbar-brand " href="{% url 'foi_home' %}" style="color:#FFF">FOI Stats</a>
+            </div>
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+					{%if request.user.is_staff %}
+                    <li>
+                        <a class="page-scroll" href="/admin/" style="color:#FFF" >Admin</a>
+                    </li>
+                    {% endif %}
+                    <li><a class="page-scroll" href="{% url 'public_bodies' %}" style="color:#FFF" >Bodies</a></li>                    
+                    <li><a class="page-scroll" href="{% url 'exemptions' %}" style="color:#FFF" >Exemptions</a></li>
+                    <li><a class="page-scroll" href="{% url 'reviews' %}" style="color:#FFF" >Reviews</a></li>
+                </ul>
+            </div>
+        </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+   
+    </div>
+  </div>
+    </nav>
+
+

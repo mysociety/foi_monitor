@@ -1,0 +1,46 @@
+{% extends "pi_monitor/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% load extra_tags %}
+{% load humanize %}
+{% block head %}
+<title>{{property.name}} - {{year.display}}</title>
+{% endblock %}
+{% block content %}
+    
+
+<h1 class="text-center">{{property.name}}</h1>
+
+{% if property.description %}
+
+<p>{{property.description}}</p>
+
+{% endif %}
+
+<hr>
+<ul class="nav nav-tabs">
+    {% for y in years %}
+    <li role="presentation" {% if year == y %}class="active"{% endif %}><a href="{% url 'pi.property' jurisdiction.slug property.slug  y.slug %}">{{y.display}}</a></li>
+    {% endfor %}
+</ul>
+	<h2>Change over time</h2>
+	{{time_chart}}
+	{% if time_chart_percent %}
+		<h2>Change over time as a percentage of <a href="{% url 'pi.property' jurisdiction.slug property.child_of.slug  year.slug %}">{{property.child_of.name}}</a></h2>
+		{{time_chart_percent}}
+	{% endif %}
+
+
+
+	<h2>By sector ({{year.display}})</h2>
+	
+	{{sector_table}}
+	
+	<h2>By authority ({{year.display}})</h2>
+
+	{{authority_table}}
+
+{% endblock %}
+{% block code %}
+	{{chart_collection.render_code}}  
+{% endblock %}
