@@ -1,0 +1,30 @@
+{% extends "pi_monitor/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% load extra_tags %}
+{% load humanize %}
+{% block head %}
+<title>Public information request monitor</title>
+{% endblock %}
+{% block content %}
+
+    <h1>Public information request monitor</h1>
+      
+        <p>This is a website that makes releases of FOI and other public information statistics more comparable. </p>
+
+		<p>It covers the following jurisdictions:</p>
+		
+		<ul>
+		{% for j in jurisdictions %}
+		<li>
+		<a href="{% url 'pi.home' j.slug %}">{{j.name}}</a>  - {{j.desc}}
+		</li>
+		{% endfor %}
+		</ul>
+
+
+{% endblock %}
+
+{% block code %}
+	{{chart_collection.render_code}}  
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>FOISA Stats</title>
+{% endblock %}
+
+{% block title_link %}
+{% if jurisdiction %}
+<a href="{% url 'pi.overview' %}">Public Info: </a> <a href="{% url 'pi.home' jurisdiction.slug %}">{{jurisdiction.name}}</a>
+{% else %}
+<a href="{% url 'pi.overview' %}">Public Information Statistics</a>
+{% endif %}
+{% endblock %}
+
+{% block top_links %}
+{% if jurisdiction %}
+<li><a class="page-scroll" href="{% url 'pi.home' jurisdiction.slug %}">Overall charts</a></li>
+<li><a class="page-scroll" href="{% url 'pi.body' jurisdiction.slug 'all-authorities' 'alltime' %}">Overall stats</a></li>
+<li><a class="page-scroll" href="{% url 'pi.year' jurisdiction.slug jurisdiction.adapter.end_year %}">{{jurisdiction.adapter.end_year}}</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

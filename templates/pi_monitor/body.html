@@ -1,0 +1,38 @@
+{% extends "pi_monitor/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% load extra_tags %}
+{% load humanize %}
+
+{% block head %}
+    <title>{{authority.name}} - {{year.display}}</title>
+{% endblock %}
+
+{% block content %}
+        <h1  class="text-center">{{authority.name}}</h1>
+        {{authority.render_full}}
+        <h3  class="text-center">{{year.display}}</h3>
+
+        <ul class="nav nav-tabs">
+            {% for y in years %}
+            <li role="presentation" {% if year == y %}class="active"{% endif %}><a href="{% url 'pi.body' jurisdiction.slug authority.slug y.slug  %}">{{y.display}}</a></li>
+            {% endfor %}
+        </ul>
+			
+            <p></p>
+			
+			{{chart}}
+
+		{% for s in stats_tree %}
+		
+            <h2><a name="{{s.slug}}" href="#{{s.slug}}">{{s.name}}</a></h2>
+			
+            {{s.table}}
+
+		{% endfor %}
+
+
+{% endblock %}
+{% block code %}
+	{{chart_collection.render_code}}  
+{% endblock %}

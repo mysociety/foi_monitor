@@ -1,0 +1,20 @@
+<table id="{{table.ident}}" class="display" style="width:100%" data-page-length="25">
+	<thead>
+	<tr>
+	{% for c in table.df.columns.to_list %}
+	<th class = "fallback-table-header">{{c}}</th>
+	{% endfor %}
+	</tr>
+	</thead>
+	<tbody>
+	{% for row in rows %}
+	<tr>{% for cell in row %}
+			<td
+			{% if cell.style %}{{cell.style.0}}="{{cell.style.1}}"{% endif %}
+			{% if cell.v %}data-order="{{cell.v|safe}}"{%endif %}>
+				{{cell.f|safe}}
+			</td>
+		{% endfor %}
+	</tr>{% endfor %}
+	</tbody>
+</table>

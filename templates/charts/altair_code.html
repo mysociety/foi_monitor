@@ -1,0 +1,5 @@
+
+var {{chart.ident}}_spec = {{chart.render_object.to_dict|safe}};
+var embed_opt = {"mode":"vega-lite", {% if make_static %}"defaultStyle": false {% endif %}};
+const {{chart.ident}} = document.getElementById('{{chart.ident}}');
+vegaEmbed("#{{chart.ident}}", {{chart.ident}}_spec, embed_opt)

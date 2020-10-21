@@ -1,0 +1,63 @@
+﻿authority_id,Government body,wdtk_name,wdtk_id,sector,alt_name,render_full
+1,"Department for Business, Enterprise and Regulatory Reform","Department for Business, Enterprise and Regulatory Reform",6,Ministries and departments,,1
+2,Home Office,Home Office,7,Ministries and departments,,1
+3,Ministry of Justice,Ministry of Justice,10,Ministries and departments,,1
+4,"Department for Digital, Culture, Media and Sport","Department for Culture, Media and Sport",12,Ministries and departments,"Department for Culture, Media and Sport",1
+5,Department of Health and Social Care,Department of Health,14,Ministries and departments,Department of Health,1
+6,Foreign and Commonwealth Office,Foreign and Commonwealth Office,15,Ministries and departments,,1
+7,"Department for Children, Schools and Families","Department for Children, Schools and Families",16,Ministries and departments,,1
+8,"Department for Innovation, Universities and Skills","Department for Innovation, Universities and Skills",17,Ministries and departments,,1
+9,"Department for Environment, Food and Rural Affairs","Department for Environment, Food and Rural Affairs",18,Ministries and departments,,1
+10,HM Treasury,Her Majesty's Treasury,19,Ministries and departments,,1
+11,Northern Ireland Office,Northern Ireland Office,20,Ministries and departments,,1
+12,Privy Council Office,Privy Council Office,21,Other offices and agencies,,1
+13,Wales Office,Wales Office / Swyddfa Cymru,22,Other offices and agencies,,1
+14,Scotland Office,Scotland Office,23,Ministries and departments,,1
+15,Department for Work and Pensions,Department for Work and Pensions,24,Ministries and departments,,1
+16,Department for International Development,Department for International Development,25,Ministries and departments,,1
+17,"Ministry of Housing, Communities and Local Government",Department for Communities and Local Government,26,Ministries and departments,Department for Communities and Local Government|Communities and Local Government,1
+18,Cabinet Office,Cabinet Office,27,Ministries and departments,,1
+19,Central Office of Information,Central Office of Information,35,Other offices and agencies,,1
+20,Ministry of Defence,Ministry of Defence,36,Ministries and departments,,1
+21,Department for Transport,Department for Transport,37,Ministries and departments,,1
+22,Attorney General's Office,Attorney General's Office,38,Ministries and departments,Legal Secretariat to the Law Officers,1
+23,Ordnance Survey,Ordnance Survey,494,Other offices and agencies,,1
+24,HM Revenue and Customs,HM Revenue and Customs,592,Other offices and agencies,,1
+25,Office for National Statistics,Office for National Statistics,693,Other offices and agencies,,1
+26,Charity Commission,Charity Commission for England and Wales,768,Other offices and agencies,,1
+27,Crown Prosecution Service,Crown Prosecution Service,771,Other offices and agencies,,1
+28,Export Credits Guarantee Department,Export Credits Guarantee Department,772,Ministries and departments,UK Export Finance,1
+29,Food Standards Agency,Food Standards Agency,773,Other offices and agencies,,1
+30,Office for Standards in Education,"Office for Standards in Education, Children's Services and Skills",776,Other offices and agencies,"Office for Standards in Education, Children's Services and Skills",1
+31,Office of Fair Trading,Office of Fair Trading,777,Other offices and agencies,,1
+32,Office of Gas and Electricity Markets,Office of Gas and Electricity Markets,778,Other offices and agencies,Office of Gas and Electricity Markets (OFGEM),1
+33,Office of Rail and Road,Office of Rail and Road,779,Other offices and agencies,Office of Rail Regulation,1
+34,Water Services Regulation Authority,Office of Water Services,780,Other offices and agencies,Water Services Regulation Authority (OFWAT),1
+35,Serious Fraud Office,Serious Fraud Office,784,Other offices and agencies,,1
+36,National Archives,National Archives,879,Other offices and agencies,,1
+37,HM Land Registry,Land Registry,975,Other offices and agencies,,1
+38,Debt Management Office,UK Debt Management Office,982,Other offices and agencies,,1
+39,Treasury Solicitor's Department,Treasury Solicitor's Department,983,Other offices and agencies,,1
+40,Rural Payments Agency,Rural Payments Agency,989,Other offices and agencies,,1
+41,National Savings and Investments,National Savings and Investments,998,Other offices and agencies,,1
+42,Royal Mint,Royal Mint,1273,Other offices and agencies,,1
+43,Health and Safety Executive,Health and Safety Executive,1312,Other offices and agencies,,1
+44,Government Equalities Office,Government Equalities Office,1600,Other offices and agencies,,1
+45,Department of Energy and Climate Change,Department of Energy and Climate Change,3747,Ministries and departments,,1
+46,Child Maintenance and Enforcement Commission,Child Maintenance and Enforcement Commission,4464,Other offices and agencies,,1
+47,"Department for Business, Innovation and Skills","Department for Business, Innovation and Skills",4492,Ministries and departments,,1
+48,Department for Education,Department for Education,6009,Ministries and departments,,1
+49,Competition and Markets Authority,Competition and Markets Authority,52310,Other offices and agencies,,1
+50,Government Legal Department,Government Legal Department,54883,Ministries and departments,,1
+51,Department for Exiting the European Union,Department for Exiting the European Union,58199,Ministries and departments,,1
+52,"Department for Business, Energy and Industrial Strategy","Department for Business, Energy and Industrial Strategy",58202,Ministries and departments,,1
+53,Department for International Trade,Department for International Trade,58203,Ministries and departments,,1
+54,Department for Constitutional Affairs,,,Ministries and departments,,1
+55,Department for Education and Skills,,,Ministries and departments,,1
+56,Department of Trade and Industry,,,Ministries and departments,,1
+57,Deputy Prime Minister's Office,,,Other offices and agencies,,1
+58,HM Customs and Excise,,,Other offices and agencies,,1
+59,Inland Revenue,,,Other offices and agencies,,1
+60,Office of the Deputy Prime Minister,,,Other offices and agencies,,1
+901,Ministries and departments,,,,,1
+902,Other offices and agencies,,,,,1

@@ -1,0 +1,36 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+
+[packages]
+fabric = "*"
+unicodecsv = "*"
+openpyxl = "*"
+xlrd = "*"
+xlwt = "*"
+django-bootstrap-form = "*"
+django-import-export = "*"
+dirsync = "*"
+django-htmlmin = "*"
+django-pipeline = "==2.0.5"
+django-pipeline-csscompressor-master = {git = "https://github.com/mysociety/django-pipeline-csscompressor"}
+everypolitician-popolo = {git = "https://github.com/ajparsons/everypolitician-popolo-python.git",ref = "export_merge_function"}
+six = "==1.15.0"
+Django = "==3.0.4"
+python-Levenshtein = "*"
+Markdown = "==2.6.2"
+Pillow = "*"
+useful-decorator = {git = "https://github.com/ajparsons/useful-decorator"}
+django-sourdough = {git = "https://github.com/ajparsons/django-sourdough"}
+numpy = "*"
+pylint-django = "*"
+altair = "*"
+altair-saver = "*"
+django-debug-toolbar = "*"
+
+[requires]
+python_version = "3.8"

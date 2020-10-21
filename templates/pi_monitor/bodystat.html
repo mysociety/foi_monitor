@@ -1,0 +1,51 @@
+{% extends "pi_monitor/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% load extra_tags %}
+{% load humanize %}
+{% block head %}
+<title>{{authority.name}} - {{property.name}}</title>
+{% endblock %}
+{% block content %}
+    
+
+<h1 class="text-center"><a href="{% url 'pi.body' jurisdiction.slug  authority.slug 'alltime' %}">{{authority.name}}</a></h1>
+<h2 class="text-center"><a href="{% url 'pi.property' jurisdiction.slug  property.slug 'alltime' %}">{{property.name}}</a></h2>
+
+{% if property.description %}
+
+<p>{{property.description}}</p>
+
+{% endif %}
+
+<hr>
+
+	<h2>Change over time</h2>
+	{{time_chart}}
+	
+	{% if time_chart_indexed %}
+	<h2>Change over time (Indexed on start)</h2>
+	{{time_chart_indexed}}
+	{% endif %}
+	
+	{% if time_chart_percent %}
+		<h2>Change over time as a percentage of <a href="{% url 'pi.property' jurisdiction.slug property.child_of.slug  year.slug %}">{{property.child_of.name}}</a></h2>
+		{{time_chart_percent}}
+		
+		{% if time_chart_percent_indexed %}
+		<h2>Change over time as a percentage of <a href="{% url 'pi.property' jurisdiction.slug property.child_of.slug  year.slug %}">{{property.child_of.name}}</a> (Indexed on start)</h2>
+		{{time_chart_percent_indexed}}
+		{% endif %}
+	{% endif %}
+
+
+	<h2>By Year</h2>
+	
+	{{year_table}}
+	
+
+
+{% endblock %}
+{% block code %}
+	{{chart_collection.render_code}}  
+{% endblock %}

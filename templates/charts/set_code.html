@@ -1,0 +1,44 @@
+
+    {% if "datatables" in collection.packages and make_static == False %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
+    {% endif %} 
+
+    {% if "altair" in collection.packages %}
+      <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script>
+    {% endif %} 
+
+      <script type="text/javascript">   
+
+      var supportsES6 = function() {
+        try {
+          new Function("(a = 0) => a");
+          return true;
+        }
+        catch (err) {
+          return false;
+        }
+      }();
+
+      function drawCharts() {
+        True = true;
+        {% for chart in charts %}
+		{% if make_static %}
+            {{chart.render_code_static}}
+		{% else %}
+            {{chart.render_code}}
+		{% endif %}
+        {% endfor %}
+      }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // test for es6 support, if not throw up the static version
+    if (supportsES6 == false){
+      $(".es5").show()
+    } else {
+      drawCharts()
+    }
+}, false);
+
+    </script>
