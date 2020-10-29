@@ -1,6 +1,7 @@
 id,value,child_of,combo_of,special,description
 1,All requests,,*children*,ALL,
 2,Public Information Requests,All requests,,PI_ALL,
+120,Public Information Requests (comparison),,,,
 3,FOISA requests,Public Information Requests,,FOI_ALL,
 4,FOISA closed - unclear,FOISA requests,,,
 5,FOISA closed - withdrawn,FOISA requests,,,
@@ -107,9 +108,9 @@ id,value,child_of,combo_of,special,description
 106,Substantial prejudice to confidentiality of commercial or industrial information ,EIR Exception,,,10(5)(e)
 107,Substantial prejudice to the interests of a third party,EIR Exception,,,10(5)(f)
 108,Substantial prejudice to the protection of the environment,EIR Exception,,,10(5)(g)
-109,Neither confirm nor deny whether environmental information held,EIR Exception,,,10(8) 
+109,Neither confirm nor deny whether environmental information held,EIR Exception,,,10(8)
 110,Personal data of the applicant - EIR,EIR Exception,,,11(1)
-111,Third party personal data - EIR,EIR Exception,,,11(2) 
+111,Third party personal data - EIR,EIR Exception,,,11(2)
 112,Neither confirm or deny whether personal data held,EIR Exception,,,11(6)
-113,WDTK FOI requests,Public Information Requests,,WDTK_ALL,
-114,Public Information Requests - full release,All requests,,PI_FULL,
+113,WDTK FOI requests,Public Information Requests (comparison),,WDTK_ALL,
+114,Public Information Requests - full release,Public Information Requests (comparison),,PI_FULL,
