@@ -48,6 +48,8 @@ class FoisaAdapter(GenericAdapter):
         for n in fill_na:
             df[n] = df[n].fillna(0)
         df["Public Information Requests"] = df["FOISA requests"] + df["EIR requests"]
+        df["Public Information Requests (comparison)"] = df["Public Information Requests"]
+
         df["Public Information Requests - full release"] = df["FOISA - full release"] + \
             df["EIRs - full release"]
 
