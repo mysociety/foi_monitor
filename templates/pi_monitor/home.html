@@ -27,7 +27,23 @@
 		
 		{{type_distribution_chart}}
 		
+		<h2>Statistics by sectors</h2>
+		<ul>
+		{% for s in jurisdiction.sectors %}
+		<li><a href="{% url 'pi.body' jurisdiction.slug s.slug 'alltime' %}">{{s.name}}</a></li>
+		{% endfor %}
+		</ul>
 		
+		<h2>Statistics by authority</h2>
+		{% regroup jurisdiction.ordered_bodies by sector as body_list %}
+		{% for bl in body_list %}
+		<h3>{{bl.grouper.name}}</h3>
+		<ul>
+		{% for s in bl.list %}
+		<li><a href="{% url 'pi.body' jurisdiction.slug s.slug 'alltime' %}">{{s.name}}</a></li>
+		{% endfor %}
+		</ul>
+		{% endfor %}
 {% endblock %}
 
 {% block code %}
