@@ -161,11 +161,15 @@ class Jurisdiction(FlexiBulkModel):
         Property.objects.bulk_create(to_create)
 
     def sectors(self):
-        return self.authorities.filter(is_sector=True)
+        return self.authorities.filter(is_sector=True).order_by('name')
 
     def bodies(self):
         return self.authorities.filter(is_sector=False,
-                                       is_overall=False)
+                                       is_overall=False).order_by('name')
+
+    def ordered_bodies(self):
+        return self.authorities.filter(is_sector=False,
+                                       is_overall=False).order_by('sector__name', 'name')
 
     def populate_authorities(self):
         adapter = self.adapter()
