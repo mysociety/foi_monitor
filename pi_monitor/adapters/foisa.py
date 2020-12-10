@@ -1,7 +1,7 @@
 
 from .base import GenericAdapter, AdapterRegistry
 import pandas as pd
-
+import numpy as np
 
 def zero_if_none(v):
     """
@@ -37,12 +37,6 @@ class FoisaAdapter(GenericAdapter):
         df = pd.DataFrame.quick.load_file(self.resources_folder,
                                           "{year}.csv".format(year=filename))
 
-        wdtk_df = pd.DataFrame.quick.load_file(self.resources_folder,
-                                               "wdtk_{year}.csv".format(year=filename))
-
-        # wdtk ids have already been mapped to FOISA ids
-        wdtk = wdtk_df.quick.to_map("authority_id", "count", default=0)
-
         fill_na = ["EIR requests", "EIRs - full release",
                    "FOISA requests", "FOISA - full release"]
         for n in fill_na:
@@ -53,7 +47,43 @@ class FoisaAdapter(GenericAdapter):
         df["Public Information Requests - full release"] = df["FOISA - full release"] + \
             df["EIRs - full release"]
 
-        df["WDTK FOI requests"] = df["authority_id"].map(wdtk)
+        # get mappings between WDTK and FOISA ids
+
+        wdtk_id_lookup = pd.DataFrame.quick.load_file(self.resources_folder,
+                                                      "authorities.csv")
+
+        id_lookup = {}
+        for r in range(1, 12):
+            col = "wdtk_id_{id}".format(id=r)
+            reduced = wdtk_id_lookup[~wdtk_id_lookup[col].isnull()]
+            new_ids = reduced.quick.to_map(col, "authority_id")
+            id_lookup.update(new_ids)
+
+        # merge in the wdtk counts
+        wdtk_df = pd.DataFrame.quick.load_file(
+            self.resources_folder, "wdtk_year_count.csv")
+        
+        # add all values up for year
+        if year == 9999:
+            wdtk_df = wdtk_df.pivot_table(
+                index=["public_body_id"], values="count", aggfunc=np.sum)
+            wdtk_df = wdtk_df.reset_index()
+        else:
+            wdtk_df = wdtk_df[wdtk_df["year"] == year]
+            wdtk_df = wdtk_df.drop(columns="year")
+        
+        wdtk_df["authority_id"] = wdtk_df["public_body_id"].apply(
+            id_lookup.get)
+        wdtk_df = wdtk_df[~wdtk_df["authority_id"].isnull()]
+        # fold together different wdtk ids covered by the same foisa id
+        wdtk_df = wdtk_df.pivot_table(
+            index=["authority_id"], values="count", aggfunc=np.sum)
+        wdtk_df = wdtk_df.reset_index()
+        wdtk_df = wdtk_df.rename(columns={"count": "WDTK FOI requests"})
+
+        # merge in the new column
+        df = pd.merge(df, wdtk_df, left_on=[
+                      "authority_id"], right_on=["authority_id"])
 
         # two columns are named the same, this fixes that
         nh = []
