@@ -34,6 +34,7 @@ TEMPLATES = [
 
         'DIRS': [
             PROJECT_PATH + '/templates/',
+            PROJECT_PATH + '/research_common/templates/',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
