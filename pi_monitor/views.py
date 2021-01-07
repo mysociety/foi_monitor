@@ -81,13 +81,13 @@ class HomeView(LocalView):
         gets the all time number of requests split by sector and year
         """
 
-        title = "Public information requests by sector"
+        title = "Change over time by sector"
 
         year_values = Value.objects.filter(authority__in=jurisdiction.sectors(),
                                            property__special="PI_ALL")
         year_values = year_values.exclude(year__number=9999)
 
-        chart = AltairChart(name=title, chart_type="line")
+        chart = AltairChart(name=title, title=title, chart_type="line")
 
         chart.header["authority__name"] = "Sector"
         chart.header["year__number"] = "Year"
@@ -99,7 +99,7 @@ class HomeView(LocalView):
         df['percentage'] = pir / pir.sum()
 
         chart.set_options(y="Public information requests",
-                          x='Year',
+                          x=alt.X('Year', title=""),
                           tooltip=['Sector',
                                    "Year",
                                    alt.Tooltip('Public information requests',  title="PIRs",
@@ -127,7 +127,7 @@ class HomeView(LocalView):
                                            property__special="PI_ALL",
                                            year__number=9999)
 
-        chart = AltairChart(name=title, chart_type="bar")
+        chart = AltairChart(name=title, title=title, chart_type="bar")
 
         header = {"authority__name": "Sector",
                   "year__number": "Year",
@@ -143,7 +143,7 @@ class HomeView(LocalView):
             year_totals[r["Year"]]
         df['Percentage in year'] = df.apply(func, axis='columns')
 
-        chart.set_options(y=alt.Y('Sector', sort="-x"),
+        chart.set_options(y=alt.Y('Sector', sort="-x", title=""),
                           x='Public information requests',
                           tooltip=['Sector',
                                    alt.Tooltip('Public information requests',  title="PIRs",
@@ -158,9 +158,10 @@ class HomeView(LocalView):
 
     def get_type_distribution_chart(self, jurisdiction):
 
-        title = "FOI vs EIR Chart"
-
         avaliable_types = jurisdiction.adapter().avaliable_types
+
+        title = ", ".join(avaliable_types) + " volumes"
+
         special_labels = ["{type}_ALL".format(
             type=x.upper()) for x in avaliable_types]
 
@@ -170,7 +171,7 @@ class HomeView(LocalView):
 
         query = query.exclude(year__number=9999)
 
-        chart = AltairChart(name=title, chart_type="line")
+        chart = AltairChart(name=title, title=title, chart_type="line")
 
         chart.header = {"property__name": "Request type",
                         "year__number": "Year",
@@ -184,7 +185,7 @@ class HomeView(LocalView):
         def func(r): return r["Information requests"] / year_totals[r["Year"]]
         df['Percentage in year'] = df.apply(func, axis='columns')
 
-        chart.set_options(x="Year",
+        chart.set_options(x=alt.X('Year', title=""),
                           y="Information requests",
                           color=alt.Color("Request type", sort="-y"),
                           tooltip=["Request type", "Year",
@@ -262,7 +263,8 @@ class PropertyView(LocalView):
 
         value_query = value_query.order_by('-value')
 
-        render_full = self.jurisdiction.authorities.filter(render_full=True).values_list('slug', flat=True)
+        render_full = self.jurisdiction.authorities.filter(
+            render_full=True).values_list('slug', flat=True)
 
         def authority_link(authority):
 
@@ -277,7 +279,7 @@ class PropertyView(LocalView):
                 return value
             else:
                 url = reverse('pi.bodystat', args=(self.jurisdiction.slug, body_slug,
-                                                self.property.slug))
+                                                   self.property.slug))
                 return get_link(value, url)
 
         auth_links = {x.slug: authority_link(
@@ -528,13 +530,13 @@ class BodyStatisticView(LocalView):
     def bake_args(self, options=None):
         for j in Jurisdiction.objects.all():
             for a in j.authorities.filter(render_full=True):
-                print ("fetching {0}".format(a.slug))
+                print("fetching {0}".format(a.slug))
                 bake_df = self.get_dataframe(a)
                 for p in j.properties.all():
                     bake_variables = {"jurisdiction": j,
                                       "authority": a,
                                       "property": p,
-                                      "bake_df":bake_df}
+                                      "bake_df": bake_df}
 
                     yield (j.slug, a.slug, p.slug, bake_variables)
 
@@ -735,7 +737,10 @@ class BodyView(LocalView):
         """
         line chart of how much was answered in full for different types
         """
-        chart = AltairChart(name="Resolveable Chart", chart_type="line")
+
+        title = "{0}: Requests received and resolved".format(authority.name)
+
+        chart = AltairChart(name=title, title=title, chart_type="line")
 
         properties = ["PI_ALL",
                       "PI_FULL"
