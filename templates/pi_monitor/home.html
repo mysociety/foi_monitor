@@ -15,16 +15,10 @@
      
 		<p>You can also see statistics for <a href="{% url 'pi.body' jurisdiction.slug 'all-authorities' 'alltime' %}">requests made to all authorities</a>.</p>
 	
-		<h2>Public information requests by sector (all time)</h2>
-		
 		{{all_time_chart}}
 
-		<h2>Change over time by sector</h2>
-		
 		{{over_time_chart}}
 
-		<h2>{% for t in jurisdiction.adapter.avaliable_types %}{{t|upper}}{% if not forloop.last %}, {% endif %}{%endfor %} volumes</h2>
-		
 		{{type_distribution_chart}}
 		
 		<h2>Statistics by sectors</h2>
