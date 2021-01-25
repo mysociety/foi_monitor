@@ -17,7 +17,7 @@ django-import-export = "*"
 dirsync = "*"
 django-htmlmin = "*"
 django-pipeline = "==2.0.5"
-django-pipeline-csscompressor-master = {git = "https://github.com/mysociety/django-pipeline-csscompressor"}
+django-pipeline-csscompressor = {git = "https://github.com/mysociety/django-pipeline-csscompressor",ref = "master"}
 everypolitician-popolo = {git = "https://github.com/ajparsons/everypolitician-popolo-python.git",ref = "export_merge_function"}
 six = "==1.15.0"
 Django = "==3.0.4"
