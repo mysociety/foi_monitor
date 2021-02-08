@@ -1,0 +1,36 @@
+################################################################################
+# This requirements file has been automatically generated from `Pipfile` with
+# `pipenv-to-requirements`
+#
+#
+# This has been done to maintain backward compatibility with tools and services
+# that do not support `Pipfile` yet.
+#
+# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
+# `Pipfile.lock` and then regenerate `requirements*.txt`.
+################################################################################
+
+-e git+https://github.com/ajparsons/django-sourdough@79269a28d5473845f47896bc769d3428edaccfdf#egg=django-sourdough
+-e git+https://github.com/ajparsons/everypolitician-popolo-python.git@export_merge_function#egg=everypolitician-popolo
+-e git+https://github.com/ajparsons/useful-decorator@6945b7017be19ebc2f5e243254bc65356e219d2f#egg=useful-decorator
+-e git+https://github.com/mysociety/django-pipeline-csscompressor#egg=django-pipeline-csscompressor
+altair
+altair-saver
+dirsync
+django-bootstrap-form
+django-debug-toolbar
+django-htmlmin
+django-import-export
+django-pipeline==2.0.5
+django==3.0.4
+fabric
+markdown==2.6.2
+numpy
+openpyxl
+pillow
+pylint-django
+python-levenshtein
+six==1.15.0
+unicodecsv
+xlrd
+xlwt
