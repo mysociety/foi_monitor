@@ -15,3 +15,11 @@ if [ ! -f .env ] ; then
 else
     echo "==> Found existing .env file, skipping creation."
 fi
+
+# Ensure initial `conf.config` is present
+if [ ! -f ./conf/config.py ] ; then
+    echo "==> Copying conf/config.py-example to conf/config.py - you might want to review this file."
+    cp conf/config.py-example conf/config.py
+else
+    echo "==> Found existing conf/config.py file, skipping creation."
+fi
