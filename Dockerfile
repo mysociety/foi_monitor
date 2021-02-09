@@ -11,8 +11,7 @@ RUN apt-get -qq update \
          --no-install-recommends \
       && rm -rf /var/lib/apt/lists/*
 
-COPY scripts/node_setup.bash /
-RUN /node_setup.bash
+RUN npm install -g sass
 
 COPY scripts/chrome_setup.bash /
 RUN /chrome_setup.bash
