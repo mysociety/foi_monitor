@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Ensure submodules are present and up-to-date
+echo "==> Updating submodules..."
+git submodule update --init
+
+# Ensure initial `.env` is populated
+if [ ! -f .env ] ; then
+    echo "==> Copying .env-example to .env - you might want to review this file."
+    cp .env-example .env
+else
+    echo "==> Found existing .env file, skipping creation."
+fi
