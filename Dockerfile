@@ -1,7 +1,15 @@
-FROM python:3.8
+FROM python:3.8-buster
 
-RUN apt-get -y install nodejs && \
-	  apt-get -y install npm
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+      && echo 'deb https://deb.nodesource.com/node_14.x buster main' > /etc/apt/sources.list.d/nodesource.list
+
+RUN apt-get -qq update \
+      && apt-get -qq install \
+            nodejs \
+         --no-install-recommends \
+      && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/node_setup.bash /
 RUN /node_setup.bash
