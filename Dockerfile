@@ -20,8 +20,8 @@ RUN npm install -g sass
 RUN mkdir /app
 WORKDIR /app
 
-COPY scripts/chrome_setup.bash scripts/chrome_setup.bash
-RUN scripts/chrome_setup.bash
+COPY bin/chrome_setup.bash bin/chrome_setup.bash
+RUN bin/chrome_setup.bash
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -30,6 +30,6 @@ COPY requirements-dev.txt .
 RUN pip install -r requirements-dev.txt
 
 COPY . .
-RUN scripts/populate_if_missing.bash
+RUN bin/populate_if_missing.bash
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
