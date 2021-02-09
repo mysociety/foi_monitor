@@ -20,4 +20,4 @@ BAKE_MEDIA_LOCATION = os.path.join(
 CHART_FOLDER = os.path.join(BAKE_MEDIA_LOCATION, "charts")
 CSV_FOLDER = os.path.join(BAKE_MEDIA_LOCATION, "csvs")
 CHROME_DRIVER = "/usr/bin/chromedriver"
-SASSC_LOCATION = "/usr/bin/dart-sass/sass"
+SASSC_LOCATION = "/usr/bin/sass"
