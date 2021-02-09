@@ -17,18 +17,19 @@ RUN apt-get -qq update \
 
 RUN npm install -g sass
 
-COPY scripts/chrome_setup.bash /
-RUN /chrome_setup.bash
+RUN mkdir /app
+WORKDIR /app
 
-COPY requirements.txt /
-RUN pip install -r /requirements.txt
+COPY scripts/chrome_setup.bash scripts/chrome_setup.bash
+RUN scripts/chrome_setup.bash
 
-COPY requirements-dev.txt /
-RUN pip install -r /requirements-dev.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-COPY . /app
+COPY requirements-dev.txt .
+RUN pip install -r requirements-dev.txt
 
-RUN /app/scripts/populate_if_missing.bash
+COPY . .
+RUN scripts/populate_if_missing.bash
 
-WORKDIR "/app"
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
