@@ -28,7 +28,6 @@ output/
 local.properties
 .classpath
 .settings/
-wdtk_*
 wdtk_processed.csv
 _env/
 _env3/
