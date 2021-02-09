@@ -2,14 +2,14 @@
 import os
 SITE_SLUG = "foi-monitor"
 CORE_APP_NAME = "pi_monitor"
-SECRET_KEY = ''
+SECRET_KEY = os.environ.get('SECRET_KEY', 'xxx')
 SITE_NAME = 'FOI Monitoring'
 LIVE_ROOT = 'http://research.mysociety.org/sites/'
 SHARE_IMAGE = ''
 TWITTER_SHARE_IMAGE = ''
 SITE_DESCRIPTION = ''
 SITE_TWITTER = 'mysociety'
-GOOGLE_ANALYTICS_ACCOUNT = 'UA-660910-43'
+GOOGLE_ANALYTICS_ACCOUNT = os.environ.get('GA', 'UA-660910-43')
 BAKE_LOCATION = "/bake_dir"
 BAKE_STATIC_LOCATION = os.path.join(
     BAKE_LOCATION, 'sites', "foisa", 'static')
