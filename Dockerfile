@@ -1,8 +1,5 @@
 FROM python:3.8
 
-RUN apt-get update && \
-      apt-get -y install sudo
-
 RUN apt-get -y install nodejs && \
 	  apt-get -y install npm
 
