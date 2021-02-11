@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+. ./.env
+
+PORT=${PORT:-8000}
+
+script/build
+
+docker run --env-file .env --rm -p ${PORT}:8000 mysocietyorg/foi_monitor:latest
