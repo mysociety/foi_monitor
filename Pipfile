@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+pipenv-to-requirements = "*"
+pycodestyle = "*"
+autopep8 = "*"
 
 [packages]
 fabric = "*"
@@ -17,15 +20,15 @@ django-import-export = "*"
 dirsync = "*"
 django-htmlmin = "*"
 django-pipeline = "==2.0.5"
-django-pipeline-csscompressor = {git = "https://github.com/mysociety/django-pipeline-csscompressor",ref = "master"}
-everypolitician-popolo = {git = "https://github.com/ajparsons/everypolitician-popolo-python.git",ref = "export_merge_function"}
+django-pipeline-csscompressor = {git = "https://github.com/mysociety/django-pipeline-csscompressor", editable = true}
+everypolitician-popolo = {git = "https://github.com/ajparsons/everypolitician-popolo-python.git",ref = "export_merge_function", editable = true}
 six = "==1.15.0"
 Django = "==3.0.4"
 python-Levenshtein = "*"
 Markdown = "==2.6.2"
 Pillow = "*"
-useful-decorator = {git = "https://github.com/ajparsons/useful-decorator"}
-django-sourdough = {git = "https://github.com/ajparsons/django-sourdough"}
+useful-decorator = {git = "https://github.com/ajparsons/useful-decorator", ref="6945b7017be19ebc2f5e243254bc65356e219d2f", editable = true}
+django-sourdough = {git = "https://github.com/ajparsons/django-sourdough", ref="79269a28d5473845f47896bc769d3428edaccfdf", editable = true}
 numpy = "*"
 pylint-django = "*"
 altair = "*"

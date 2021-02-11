@@ -1,0 +1,4 @@
+.env
+conf/config.py
+.git*
+bake_dir/

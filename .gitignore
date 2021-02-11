@@ -28,7 +28,6 @@ output/
 local.properties
 .classpath
 .settings/
-wdtk_*
 wdtk_processed.csv
 _env/
 _env3/
@@ -36,3 +35,6 @@ conf/config.py
 conf/ssh_creds.py
 static/sass
 *.sqlite3
+.env
+bake_dir/
+.devcontainer/devcontainer.json

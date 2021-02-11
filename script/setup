@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# script/setup: restore to pristine checkout
+#
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/bootstrap
+
+echo "==> Resetting local database..."
+rm -f databases/db.sqlite3
