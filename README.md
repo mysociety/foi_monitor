@@ -8,16 +8,14 @@ Live version: https://research.mysociety.org/sites/foi-monitor/
 
 ## Setup
 
-Set the `BUILD_PATH` (where the completed site will be rendered to, not necessary for local work) in `config.py`
-
+There are script-to-rule-them-all scripts that trigger actions in the dockerfile.
 Run the following to set up a local instance:
 
-```
-pipenv install
-pipenv shell
-invoke migrate
-invoke populate
-```
+* `script/bootstrap` - Prepare config files from defaults.
+* `script/setup` - Bootstrap and remove any existing database.
+* `script/build` - Build container and database (will use existing database in `databases\db.sqlite3` if present)
+* `script/server` - Load container and run interactive django server.
+* `script/bake` - Load container and render site to `bake_dir`. Accepts command line arguments from `[django-sourdough](https://jinhory.xyz/ajparsons/django-sourdough)` e.g. `--only-absent` to only render missing files.
 
 The site can then be viewed at http://127.0.0.1:8000/sites/foi-monitor/
 
@@ -40,9 +38,4 @@ To add a new adapter, add it to the `PI_ADAPTERS` list in `settings.py`.
 
 ## Uploading
 
-To render to the specified location use `python manage.py bake`. If not running in a vagrant, this will require a path to a CHROME_DRIVER in `config.py`.
-
-Upload involves creating a zip and uploading via scp. Look at `tasks.py` for more details, but after setting up ssh details in `conf.ssh_creds.py` (usually reference to location of key). 
-
-`invoke bakezip`
-`invoke uploadzip`
+[No automated process, once baked on server, manually zip and move to correct server.]
