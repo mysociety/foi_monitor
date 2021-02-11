@@ -36,3 +36,4 @@ conf/ssh_creds.py
 static/sass
 *.sqlite3
 .env
+bake_dir/

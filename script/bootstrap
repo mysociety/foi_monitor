@@ -23,3 +23,6 @@ if [ ! -f ./conf/config.py ] ; then
 else
     echo "==> Found existing conf/config.py file, skipping creation."
 fi
+
+# ensure there's a `bake_dir/`
+mkdir -p bake_dir
