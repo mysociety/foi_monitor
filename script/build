@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# script/build: builds the project
+#
 
 set -e
 
@@ -6,4 +9,9 @@ cd "$(dirname "$0")/.."
 
 script/update
 
-docker build -t foi_monitoring .
+# Build the image
+docker build -t mysocietyorg/foi_monitor:latest .
+
+# Tag it with a timestamp
+NOW=$(date +%s)
+docker tag mysocietyorg/foi_monitor:latest mysocietyorg/foi_monitor:${NOW}
