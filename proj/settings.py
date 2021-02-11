@@ -88,7 +88,6 @@ DATABASES = {
 }
 
 
-
 MIDDLEWARE = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -100,8 +99,6 @@ MIDDLEWARE = (
     'htmlmin.middleware.HtmlMinifyMiddleware',
     'htmlmin.middleware.MarkRequestMiddleware',
 )
-
-
 
 
 INTERNAL_IPS = [
