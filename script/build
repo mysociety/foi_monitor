@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# script/build: builds the project
+#
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ "$1" = "--all" ]; then
+    script/bake
+    exit $?
+fi
+
+script/update
+
+# Build the image
+docker build -t mysocietyorg/foi_monitor:latest .
+
+# Tag it with a timestamp
+NOW=$(date +%s)
+docker tag mysocietyorg/foi_monitor:latest mysocietyorg/foi_monitor:${NOW}
+
+# Extract the database
+CONTAINER=$(docker create mysocietyorg/foi_monitor:latest)
+docker cp ${CONTAINER}:/app/databases/db.sqlite3 databases/db.sqlite3
+docker container rm $CONTAINER
