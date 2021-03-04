@@ -69,6 +69,8 @@ class Jurisdiction(FlexiBulkModel):
         prop = self.properties.get(special)
         return prop
 
+
+
     @classmethod
     def populate(cls):
         cls.objects.all().delete()
@@ -86,6 +88,12 @@ class Jurisdiction(FlexiBulkModel):
     def adapter(self):
         adapter_class = AdapterRegistry.get(self.slug)
         return adapter_class(self.resources_folder)
+
+    def data_source(self):
+        """
+        label for when charts are copied
+        """
+        return self.adapter().data_source
 
     def year_range(self):
         adapter = self.adapter()

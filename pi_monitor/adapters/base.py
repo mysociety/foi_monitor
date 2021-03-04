@@ -76,9 +76,11 @@ class GenericAdapter(object):
     start_year = 0000
     end_year = 9999
     description_loc = "description.md"
+    data_source = ""
 
     def __init__(self, resources_folder):
         self.resources_folder = resources_folder
+        self.data_source = self.__class__.data_source
 
     def get_description(self):
         """
