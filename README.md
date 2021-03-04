@@ -15,7 +15,7 @@ Run the following to set up a local instance:
 * `script/setup` - Bootstrap and remove any existing database.
 * `script/build` - Build container and database (will use existing database in `databases\db.sqlite3` if present)
 * `script/server` - Load container and run interactive django server.
-* `script/bake` - Load container and render site to `bake_dir`. Accepts command line arguments from `[django-sourdough](https://jinhory.xyz/ajparsons/django-sourdough)` e.g. `--only-absent` to only render missing files.
+* `script/bake` - Load container and render site to `bake_dir`. Accepts command line arguments from [django-sourdough](https://www.github.com/ajparsons/django-sourdough) e.g. `--only-absent` to only render missing files.
 
 The site can then be viewed at http://127.0.0.1:8000/sites/foi-monitor/
 
