@@ -5,7 +5,7 @@ from itertools import groupby
 import altair as alt
 import numpy as np
 import pandas as pd
-from research_common.charts import AltairChart, Table, query_to_df
+from research_common.charts import AltairChart, Table, query_to_df, group_to_other
 from research_common.views import AnchorChartsMixIn
 from django.conf import settings
 from django.db.models import OuterRef, Q, Subquery, Sum
@@ -95,6 +95,10 @@ class HomeView(LocalView):
 
         df = chart.apply_query(year_values)
 
+        df = group_to_other(df, "Public information requests",
+                            "Year", "Sector", cut_off=3, other_label="Other sectors")
+        chart.df = df
+
         pir = df["Public information requests"]
         df['percentage'] = pir / pir.sum()
 
@@ -148,9 +152,16 @@ class HomeView(LocalView):
                           tooltip=['Sector',
                                    alt.Tooltip('Public information requests',  title="PIRs",
                                                format=","),
-                                   alt.Tooltip('Percentage in year',
-                                               format=",.2%")],
+                                   alt.Tooltip('Percentage in year',format="%"
+                                               )],
                           )
+
+        chart.set_text_options(text=alt.Text('Public information requests', format=".2s"),
+                               align='left',
+                               baseline='middle',
+                               dx=3)
+
+        chart.data_source = "Data source: " + jurisdiction.data_source()
 
         chart.options["x"].axis = alt.Axis(format='s')
 
@@ -173,6 +184,7 @@ class HomeView(LocalView):
 
         chart = AltairChart(name=title, title=title, chart_type="line")
 
+        chart.data_source = "Data source: " + jurisdiction.data_source()
         chart.header = {"property__name": "Request type",
                         "year__number": "Year",
                         "value": "Information requests"}
@@ -307,6 +319,7 @@ class PropertyView(LocalView):
         """
         table to show counts or percentages over time
         """
+
         title = item_property.name + " chart over time"
         chart = AltairChart(name=title, chart_type="line")
 
@@ -315,8 +328,12 @@ class PropertyView(LocalView):
         chart.header["year__number"] = "Year"
         if percentage:
             chart.header["percentage_value"] = safe_name
+            property_tooltip = alt.Tooltip(safe_name, format="%")
+            agg_func = "mean"
         else:
             chart.header["value"] = safe_name
+            property_tooltip = alt.Tooltip(safe_name)
+            agg_func = "sum"
         chart.header["authority__name"] = "Sector"
 
         sectors = Authority.objects.filter(Q(is_sector=True) | Q(
@@ -329,9 +346,13 @@ class PropertyView(LocalView):
 
         df = chart.apply_query(year_values)
 
+        df = group_to_other(df, safe_name, "Year", "Sector",
+                            cut_off=3, agg_func=agg_func, other_label="Other sectors")
+        chart.df = df
+
         chart.set_options(x="Year",
                             y=safe_name,
-                            tooltip=[safe_name, "Year"],
+                            tooltip=["Sector", property_tooltip, "Year"],
                             color="Sector"
                           )
 
@@ -649,8 +670,6 @@ class BodyStatisticView(LocalView):
             title += " reindexed"
         chart = AltairChart(name=title, chart_type="line")
 
-        #df = main_df[main_df["property_id" == item_property.id]]
-
         df = main_df.copy()
 
         if percentage:
@@ -680,13 +699,22 @@ class BodyStatisticView(LocalView):
             setting_min = df[safe_name].min()
             setting_max = df[safe_name].max()
 
+        df["line_label"] = df["Authority"]
+        df.loc[df["Year"] != df["Year"].min(), "line_label"] = ""
+
         chart.df = df
 
         chart.set_options(x="Year",
-                            y=safe_name,
-                            tooltip=[safe_name, "Year"],
-                            color="Authority"
+                          y=safe_name,
+                          tooltip=[safe_name, "Year"],
+                          color="Authority",
                           )
+
+        jurisdiction = item_property.jurisdiction.data_source()
+        chart.data_source = "Data source: {0}".format(jurisdiction)
+
+        # too fiddly to get working automatically at the moment
+        # chart.set_text_options(text="line_label", dx=-10, baseline="middle", align="right")
 
         chart.options["x"].axis = alt.Axis(format='d', values=years)
         if percentage and not reindex_on_earliest:

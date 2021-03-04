@@ -32,6 +32,7 @@ class CabinetAdapter(GenericAdapter):
     public_types = ["FOI"]
     private_types = []
     avaliable_types = public_types + private_types
+    data_source = "Cabinet Office FOI Statistics"
 
     def get_year(self, year: int, authority_lookup: dict):
 

@@ -27,6 +27,7 @@ class FoisaAdapter(GenericAdapter):
     public_types = ["FOI", "EIR"]
     private_types = ["SAR"]
     avaliable_types = public_types + private_types
+    data_source = "OSIC FOI Statistics"
 
     def get_year(self, year: int, authority_lookup: dict):
         if year == 9999:
