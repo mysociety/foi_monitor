@@ -77,6 +77,7 @@ class GenericAdapter(object):
     end_year = 9999
     description_loc = "description.md"
     data_source = ""
+    geo_label = ""
 
     def __init__(self, resources_folder):
         self.resources_folder = resources_folder

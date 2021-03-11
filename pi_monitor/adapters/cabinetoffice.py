@@ -33,6 +33,7 @@ class CabinetAdapter(GenericAdapter):
     private_types = []
     avaliable_types = public_types + private_types
     data_source = "Cabinet Office FOI Statistics"
+    geo_label = "Central Gov"
 
     def get_year(self, year: int, authority_lookup: dict):
 

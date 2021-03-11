@@ -95,6 +95,12 @@ class Jurisdiction(FlexiBulkModel):
         """
         return self.adapter().data_source
 
+    def geo_label(self):
+        """
+        label for when charts are copied
+        """
+        return self.adapter().geo_label       
+
     def year_range(self):
         adapter = self.adapter()
         return range(adapter.start_year, adapter.end_year+1)
