@@ -81,7 +81,8 @@ class HomeView(LocalView):
         gets the all time number of requests split by sector and year
         """
 
-        title = "Change over time by sector"
+        title = "Change over time by sector ({0})".format(
+            jurisdiction.geo_label())
 
         year_values = Value.objects.filter(authority__in=jurisdiction.sectors(),
                                            property__special="PI_ALL")
@@ -125,7 +126,8 @@ class HomeView(LocalView):
         gets the all time number of requests split by sector
         """
 
-        title = "Public information requests by sector"
+        title = "Public information requests by sector ({0})".format(
+            jurisdiction.geo_label())
 
         year_values = Value.objects.filter(authority__in=jurisdiction.sectors(),
                                            property__special="PI_ALL",
@@ -152,7 +154,7 @@ class HomeView(LocalView):
                           tooltip=['Sector',
                                    alt.Tooltip('Public information requests',  title="PIRs",
                                                format=","),
-                                   alt.Tooltip('Percentage in year',format="%"
+                                   alt.Tooltip('Percentage in year', format="%"
                                                )],
                           )
 
@@ -171,7 +173,8 @@ class HomeView(LocalView):
 
         avaliable_types = jurisdiction.adapter().avaliable_types
 
-        title = ", ".join(avaliable_types) + " volumes"
+        title = ", ".join(avaliable_types) + \
+            " volumes ({0})".format(jurisdiction.geo_label())
 
         special_labels = ["{type}_ALL".format(
             type=x.upper()) for x in avaliable_types]
