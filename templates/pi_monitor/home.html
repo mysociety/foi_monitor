@@ -11,7 +11,7 @@
 
 {{desc|safe}}
 
-        <p>Statistics are available for: {% for y in years %}{% if forloop.first == False %}{% if forloop.last %} and {% else %}, {%endif%}{%endif%}<a href="{% url 'pi.year' jurisdiction.slug y.slug %}" >{{y.display}}</a>{% endfor %}.
+        <p>Statistics are available for: {% for y in years %}{% if forloop.first == False %}{% if forloop.last %} and {% else %}, {%endif%}{%endif%}<a href="{% url 'pi.year' jurisdiction.slug y.slug %}" >{{y.display.lower}}</a>{% endfor %}.
      
 		<p>You can also see statistics for <a href="{% url 'pi.body' jurisdiction.slug 'all-authorities' 'alltime' %}">requests made to all authorities</a>.</p>
 	

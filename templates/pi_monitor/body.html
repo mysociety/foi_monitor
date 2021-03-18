@@ -24,9 +24,9 @@
 			{{chart}}
 
 		{% for s in stats_tree %}
-		
-            <h2><a name="{{s.slug}}" href="#{{s.slug}}" style="font-size: smaller;">&#128279;</a>{{s.name}}</h2>
-			
+            <a name="{{s.slug}}"></a>
+            <h2>{{s.name}}</h2>
+			<a href="#{{s.slug}}" style="font-size: smaller;">Link to this table.</a>
             {{s.table}}
 
 		{% endfor %}

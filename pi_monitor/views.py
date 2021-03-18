@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 from itertools import groupby
+from os import POSIX_FADV_SEQUENTIAL
 
 import altair as alt
 import numpy as np
@@ -252,10 +253,18 @@ class PropertyView(LocalView):
             values__property=self.property).distinct()
         self.year = Year.objects.get(jurisdiction=self.jurisdiction,
                                      slug=self.year_slug)
-        self.time_chart = self.property_over_time(self.property)
-        if self.property.child_of_id:
-            self.time_chart_percent = self.property_over_time(
-                self.property, percentage=True)
+        if self.year_slug == "alltime":
+            self.time_chart = self.property_over_time(self.property)
+            if self.property.child_of_id:
+                self.time_chart_percent = self.property_over_time(
+                    self.property, percentage=True)
+        else:
+            self.time_chart = self.property_over_time(
+                self.property, year=self.year)
+            if self.property.child_of_id:
+                self.time_chart_percent = self.property_over_time(
+                    self.property, percentage=True, year=self.year)
+            # add new bar chart based on property and year
 
         self.sector_table = self.public_bodies_table(self.property,
                                                      self.year,
@@ -318,13 +327,25 @@ class PropertyView(LocalView):
         table.apply_query(value_query)
         return table
 
-    def property_over_time(self, item_property, percentage=False):
+    def property_over_time(self, item_property, percentage=False, year=None):
         """
         table to show counts or percentages over time
+
+        if year is set, do bar charts. 
+        If not set - do a comparative line chart of all years. 
+
         """
 
-        title = item_property.name + " chart over time"
-        chart = AltairChart(name=title, chart_type="line")
+        title = item_property.name + " by sector"
+
+        if percentage:
+            title = f"{item_property.name} as a percentage of {item_property.child_of.name.lower()}"
+
+        if year:
+            chart_type = "bar"
+        else:
+            chart_type = "line"
+        chart = AltairChart(name=title, title=title, chart_type=chart_type)
 
         safe_name = conditional_escape(item_property.name)
 
@@ -347,22 +368,33 @@ class PropertyView(LocalView):
 
         year_values = year_values.exclude(year__number=9999)
 
+        if year:
+            year_values = year_values.filter(year=year)
+
         df = chart.apply_query(year_values)
 
         df = group_to_other(df, safe_name, "Year", "Sector",
                             cut_off=3, agg_func=agg_func, other_label="Other sectors")
         chart.df = df
 
-        chart.set_options(x="Year",
-                            y=safe_name,
-                            tooltip=["Sector", property_tooltip, "Year"],
-                            color="Sector"
+        # do bar charts by sector for each year.
+        if year:
+            xx = alt.X("Sector", axis=alt.Axis(labelAngle=0), title="")
+            yy = alt.Y(safe_name, title=f"{safe_name} ({year.number})")
+        else:
+            xx = "Year"
+            yy = safe_name
+
+        chart.set_options(x=xx,
+                          y=yy,
+                          tooltip=["Sector", property_tooltip, "Year"],
+                          color="Sector"
                           )
 
-        years = df["Year"].unique()
-        years.sort()
-
-        chart.options["x"].axis = alt.Axis(format='d', values=years)
+        if not year:
+            years = df["Year"].unique()
+            years.sort()
+            chart.options["x"].axis = alt.Axis(format='d', values=years)
         if percentage:
             chart.options["y"].axis = alt.Axis(format='.0%')
             chart.options["y"].scale = alt.Scale(domain=(0, 1))
@@ -505,8 +537,8 @@ class YearView(LocalView):
         return table
 
     def sector_distribution(self, year):
-        title = "Public information requests by sector %"
-        chart = AltairChart(name=title, chart_type="bar")
+        title = "Public information requests by sector"
+        chart = AltairChart(name=title, title=title, chart_type="bar")
 
         sectors = year.jurisdiction.sectors()
 
@@ -527,6 +559,11 @@ class YearView(LocalView):
                                        "Public information requests", format=","),
                                    alt.Tooltip("Percentage", format=",.2%")]
                           )
+
+        chart.set_text_options(text=alt.Text('Public information requests', format=".2s"),
+                               align='left',
+                               baseline='middle',
+                               dx=3)
 
         chart.custom_settings = lambda x: x.configure_point(size=50)
 
@@ -666,12 +703,21 @@ class BodyStatisticView(LocalView):
 
         safe_name = conditional_escape(item_property.name)
 
-        title = safe_name + " chart over time"
+        safe_name = safe_name + " chart over time"
         if percentage:
-            title += " percentage"
+            safe_name += " percentage"
         if reindex_on_earliest:
-            title += " reindexed"
-        chart = AltairChart(name=title, chart_type="line")
+            safe_name += " reindexed"
+
+        title = f"Change over time"
+        if percentage:
+            title += f" as a percentage of {item_property.child_of.name.lower()}"
+            if reindex_on_earliest:
+                title += f" (indexed)"
+        else:
+            if reindex_on_earliest:
+                title += f" (indexed on start)"
+        chart = AltairChart(name=safe_name, title=title, chart_type="line")
 
         df = main_df.copy()
 
@@ -724,7 +770,7 @@ class BodyStatisticView(LocalView):
             chart.options["y"].axis = alt.Axis(format='.0%')
             chart.options["y"].scale = alt.Scale(domain=(0, 1))
         if reindex_on_earliest:
-            chart.options["y"].title = "{item} ({year} Indexed)".format(item=safe_name,
+            chart.options["y"].title = "{item} ({year} indexed)".format(item=safe_name,
                                                                         year=years[0])
 
             if setting_min != np.inf and setting_max != np.inf:
@@ -769,7 +815,7 @@ class BodyView(LocalView):
         line chart of how much was answered in full for different types
         """
 
-        title = "{0}: Requests received and resolved".format(authority.name)
+        title = "{0}: requests received and resolved".format(authority.name)
 
         chart = AltairChart(name=title, title=title, chart_type="line")
 

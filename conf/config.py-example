@@ -21,6 +21,7 @@ CHART_FOLDER = os.path.join(BAKE_MEDIA_LOCATION, "charts")
 CSV_FOLDER = os.path.join(BAKE_MEDIA_LOCATION, "csvs")
 CHROME_DRIVER = "/usr/bin/chromedriver"
 SASSC_LOCATION = "/usr/bin/sass"
+ORG_LOGO = "/sites/explorer/static/img/mysociety-logo.jpg"
 
 VEGALITE_SERVER_URL = os.environ.get('VEGALITE_SERVER_URL', '')
 VEGALITE_USE_SERVER = os.environ.get('VEGALITE_USE_SERVER', False)
