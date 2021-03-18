@@ -26,14 +26,14 @@ class CabinetAdapter(GenericAdapter):
     end_year = 2019
     authority_name_column = "Government body"
     name = "Cabinet Office FOI"
-    desc = "UK Central Government figures (collected and released by Cabinet Office)"
+    desc = "UK central government figures (collected and released by Cabinet Office)"
     filename = "foi-statistics-q4-2019-and-annual-published-data2.csv"
     slug = "cabinetfoi"
     public_types = ["FOI"]
     private_types = []
     avaliable_types = public_types + private_types
-    data_source = "Cabinet Office FOI Statistics"
-    geo_label = "Central Gov"
+    data_source = "Cabinet Office FOI statistics"
+    geo_label = "UK goverment"
 
     def get_year(self, year: int, authority_lookup: dict):
 

@@ -23,21 +23,26 @@
     <li role="presentation" {% if year == y %}class="active"{% endif %}><a href="{% url 'pi.property' jurisdiction.slug property.slug  y.slug %}">{{y.display}}</a></li>
     {% endfor %}
 </ul>
-	<h2><a name="change_over_time" href="#change_over_time" style="font-size: smaller;">&#128279;</a>Change over time</h2>
+	<a name="change_over_time"></a>
+	<a  href="#change_over_time" style="font-size: smaller;">Link to this chart</a>
 	{{time_chart}}
+	
+	
 	{% if time_chart_percent %}
-	<h2><a name="change_over_time_percent" href="#change_over_time_percent" style="font-size: smaller;">&#128279;</a>Change over time as a percentage of <a href="{% url 'pi.property' jurisdiction.slug property.child_of.slug  year.slug %}">{{property.child_of.name}}</a></h2>
+	<a name="change_over_time_percent"></a>
+	<a href="#change_over_time_percent" style="font-size: smaller;"">Link to this chart</a>
 		{{time_chart_percent}}
+	
 	{% endif %}
 
 
 
-	<h2><a name="by_sector_{{year.number}}" href="#by_sector_{{year.number}}" style="font-size: smaller;">&#128279;</a>By sector ({{year.display}})</h2>
-	
+	<h2>By sector ({{year.display}})</h2>
+	<a name="by_sector_{{year.number}}" href="#by_sector_{{year.number}}" style="font-size: smaller;">Link to this table.</a>
 	{{sector_table}}
 	
-	<h2><a name="by_authority_{{year.number}}" href="#by_authority_{{year.number}}" style="font-size: smaller;">&#128279;</a>By authority ({{year.display}})</h2>
-
+	<h2>By authority ({{year.display}})</h2>
+	<a name="by_authority_{{year.number}}" href="#by_authority_{{year.number}}" style="font-size: smaller;">Link to this table.</a>
 	{{authority_table}}
 
 {% endblock %}
