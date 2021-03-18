@@ -22,7 +22,9 @@ CSV_FOLDER = os.path.join(BAKE_MEDIA_LOCATION, "csvs")
 CHROME_DRIVER = "/usr/bin/chromedriver"
 SASSC_LOCATION = "/usr/bin/sass"
 ORG_LOGO = "/sites/explorer/static/img/mysociety-logo.jpg"
-
+EXPORT_CSVS = os.environ.get('EXPORT_CSVS', 'True').lower() == "true"
+EXPORT_CHARTS = os.environ.get('EXPORT_CHARTS', 'False').lower() == "true"
+FORCE_EXPORT_CHARTS = os.environ.get('FORCE_EXPORT_CHARTS', 'False').lower() == "true"
 VEGALITE_SERVER_URL = os.environ.get('VEGALITE_SERVER_URL', '')
-VEGALITE_USE_SERVER = os.environ.get('VEGALITE_USE_SERVER', False)
+VEGALITE_USE_SERVER = os.environ.get('VEGALITE_USE_SERVER', 'false').lower() == "true"
 VEGALITE_ENCRYPT_KEY = os.environ.get('VEGALITE_ENCRYPT_KEY', '')
