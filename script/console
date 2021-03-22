@@ -1,0 +1,1 @@
+docker run --env-file .env -it -v ${PWD}/bake_dir:/bake_dir mysocietyorg/foi_monitor:latest bash
