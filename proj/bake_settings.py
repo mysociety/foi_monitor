@@ -1,6 +1,6 @@
 from .settings import *
 
-print ("using bake settings")
+print("using bake settings")
 
 DEBUG = False
 HTML_MINIFY = not DEBUG
