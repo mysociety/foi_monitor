@@ -17,7 +17,6 @@ media/
 .project
 .metadata
 .gradle
-bin/
 tmp/
 target/
 output/
