@@ -1,5 +1,4 @@
 ﻿authority_id,Government body,wdtk_name,wdtk_id,sector,alt_name,render_full
-1,"Department for Business, Enterprise and Regulatory Reform","Department for Business, Enterprise and Regulatory Reform",6,Ministries and departments,,1
 2,Home Office,Home Office,7,Ministries and departments,,1
 3,Ministry of Justice,Ministry of Justice,10,Ministries and departments,,1
 4,"Department for Digital, Culture, Media and Sport","Department for Culture, Media and Sport",12,Ministries and departments,"Department for Culture, Media and Sport",1
@@ -10,7 +9,6 @@
 9,"Department for Environment, Food and Rural Affairs","Department for Environment, Food and Rural Affairs",18,Ministries and departments,,1
 10,HM Treasury,Her Majesty's Treasury,19,Ministries and departments,,1
 11,Northern Ireland Office,Northern Ireland Office,20,Ministries and departments,,1
-12,Privy Council Office,Privy Council Office,21,Other offices and agencies,,1
 13,Wales Office,Wales Office / Swyddfa Cymru,22,Other offices and agencies,,1
 14,Scotland Office,Scotland Office,23,Ministries and departments,,1
 15,Department for Work and Pensions,Department for Work and Pensions,24,Ministries and departments,,1
@@ -52,12 +50,5 @@
 51,Department for Exiting the European Union,Department for Exiting the European Union,58199,Ministries and departments,,1
 52,"Department for Business, Energy and Industrial Strategy","Department for Business, Energy and Industrial Strategy",58202,Ministries and departments,,1
 53,Department for International Trade,Department for International Trade,58203,Ministries and departments,,1
-54,Department for Constitutional Affairs,,,Ministries and departments,,1
-55,Department for Education and Skills,,,Ministries and departments,,1
-56,Department of Trade and Industry,,,Ministries and departments,,1
-57,Deputy Prime Minister's Office,,,Other offices and agencies,,1
-58,HM Customs and Excise,,,Other offices and agencies,,1
-59,Inland Revenue,,,Other offices and agencies,,1
-60,Office of the Deputy Prime Minister,,,Other offices and agencies,,1
 901,Ministries and departments,,,,,1
 902,Other offices and agencies,,,,,1
