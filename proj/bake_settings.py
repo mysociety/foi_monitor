@@ -8,8 +8,6 @@ SITE_ROOT = "https://research.mysociety.org/sites"
 IS_LIVE = True
 STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
 
-EXPORT_CHARTS = True
-
 DISABLE_APPS = ['django.contrib.admin', 'debug_toolbar']
 
 INSTALLED_APPS = [x for x in INSTALLED_APPS if x not in DISABLE_APPS]
