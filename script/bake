@@ -6,4 +6,4 @@ cd "$(dirname "$0")/.."
 
 script/build
 
-docker run --rm -v ${PWD}/bake_dir:/bake_dir mysocietyorg/foi_monitor:latest python manage.py bake $@
+docker run --env-file .env --rm -v ${PWD}/bake_dir:/bake_dir mysocietyorg/foi_monitor:latest python manage.py bake $@
