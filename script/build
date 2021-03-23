@@ -6,7 +6,7 @@
 set -e
 
 cd "$(dirname "$0")/.."
-. ./.env
+export $(grep -v '^#' .env | xargs)
 
 if [ "$1" = "--all" ]; then
     script/bake
