@@ -1,0 +1,1 @@
+docker_image_name=foi_monitoring

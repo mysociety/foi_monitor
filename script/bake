@@ -2,8 +2,14 @@
 
 set -e
 
+
 cd "$(dirname "$0")/.."
 
+. script/config.sh
 script/build
 
-docker run --env-file .env --rm -v ${PWD}/bake_dir:/bake_dir mysocietyorg/foi_monitor:latest python manage.py bake $@
+echo "==> Creating detached docker process..."
+docker run --env-file .env --rm -d --name $docker_image_name -v ${PWD}/bake_dir:/bake_dir mysocietyorg/$docker_image_name:latest python manage.py bake $@
+
+echo "==> Creating connecting to log process (can safely exit)..."
+script/logs --follow
