@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+. ./.env
+
+echo "==> Create tar of rendered sites"
+cd bake_dir/sites
+tar -czvf ../site_archive.tar.gz .
+cd ../..
+
+echo "==> Move to host server"
+scp bake_dir/site_archive.tar.gz $USER@$PUBLISH_HOST:site_archive.tar.gz
+
+echo "==> Unzip on host server"
+ssh -t $USER@$PUBLISH_HOST "sudo tar -xzvf site_archive.tar.gz --directory $PUBLISH_PATH"
