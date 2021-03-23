@@ -5,6 +5,6 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-. script/config.sh
+. ./.env
 
-docker logs $docker_image_name --tail 20 $@
+docker logs $DOCKER_IMAGE_NAME --tail 20 $@

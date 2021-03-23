@@ -5,6 +5,6 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-. script/config.sh
+. ./.env
 
-docker stop $docker_image_name
+docker stop $DOCKER_IMAGE_NAME
