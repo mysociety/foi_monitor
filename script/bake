@@ -5,7 +5,8 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-. ./.env
+export $(grep -v '^#' .env | xargs)
+
 script/build
 
 echo "==> Creating detached docker process..."
