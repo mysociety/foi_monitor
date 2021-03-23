@@ -22,7 +22,7 @@ django-debug-toolbar
 django-htmlmin
 django-import-export
 django-pipeline==2.0.5
-django==3.0.4
+django==3.1.6
 fabric
 markdown==2.6.2
 numpy
