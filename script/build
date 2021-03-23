@@ -6,6 +6,7 @@
 set -e
 
 cd "$(dirname "$0")/.."
+. script/config.sh
 
 if [ "$1" = "--all" ]; then
     script/bake
@@ -15,11 +16,11 @@ fi
 script/update
 
 # Build the image
-docker build -t mysocietyorg/foi_monitor:latest .
+docker build -t mysocietyorg/$docker_image_name:latest .
 
 # Tag it with a timestamp
 NOW=$(date +%s)
-docker tag mysocietyorg/foi_monitor:latest mysocietyorg/foi_monitor:${NOW}
+docker tag mysocietyorg/$docker_image_name:latest mysocietyorg/$docker_image_name:${NOW}
 
 # Extract the database
 CONTAINER=$(docker create mysocietyorg/foi_monitor:latest)
