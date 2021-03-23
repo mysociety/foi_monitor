@@ -7,4 +7,4 @@ cd "$(dirname "$0")/.."
 
 . script/config.sh
 
-docker logs --name $docker_image_name --tail 20 $@
+docker logs $docker_image_name --tail 20 $@
