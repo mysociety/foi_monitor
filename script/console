@@ -7,6 +7,6 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-. script/config.sh
+. ./.env
 
-docker run --env-file .env -it -v ${PWD}/bake_dir:/bake_dir mysocietyorg/$docker_image_name:latest bash
+docker run --env-file .env -it -v ${PWD}/bake_dir:/bake_dir mysocietyorg/$DOCKER_IMAGE_NAME:latest bash

@@ -5,6 +5,6 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-. script/config.sh
+. ./.env
 
-docker attach $docker_image_name
+docker attach $DOCKER_IMAGE_NAME
