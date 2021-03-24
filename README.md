@@ -39,8 +39,8 @@ To add a new adapter, add it to the `PI_ADAPTERS` list in `settings.py`.
 
 The deploy process uses docker to build a directory of static images that should then be deployed to a server. The instructions for doing this on mySociety infrastructure are:
 
-* Clone this repository.
-* Create a `.env` file from the `.env-example` file. Secret settings are on the `research minisites` page of the wiki. 
+* Clone this repository / `git pull origin` if updating an existing folder.
+* `script/bootstrap` will create an `.env` file from the `.env-example` file if not present. Update this using secret settings from `research minisites` page of the wiki. 
 * Run `script/build` to create the docker image and populate the database.
 * Run `script/bake` to create the static files in the `bake_dir` directory. This creates a detached docker process that can be reattached with `script/attach` or monitored with `script/logs --follow` (which is run automatically but can be exited).
 * With correctly configured `.env` file, run `script/publish` to copy the static files to a tarball, copy it to the deployment server, and untar in the appropriate location (requires sudo password).
