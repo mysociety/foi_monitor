@@ -6,7 +6,7 @@ from os import POSIX_FADV_SEQUENTIAL
 import altair as alt
 import numpy as np
 import pandas as pd
-from research_common.charts import AltairChart, Table, query_to_df, group_to_other
+from research_common.charts import AltairChart, Table, query_to_df, group_to_other, theme
 from research_common.views import AnchorChartsMixIn
 from django.conf import settings
 from django.db.models import OuterRef, Q, Subquery, Sum
@@ -331,15 +331,15 @@ class PropertyView(LocalView):
         """
         table to show counts or percentages over time
 
-        if year is set, do bar charts. 
-        If not set - do a comparative line chart of all years. 
+        if year is set, do bar charts.
+        If not set - do a comparative line chart of all years.
 
         """
 
-        title = item_property.name + " by sector"
-
+        title = item_property.name
+        y_lab = "Requests by sector"
         if percentage:
-            title = f"{item_property.name} as a percentage of {item_property.child_of.name.lower()}"
+            y_lab = f"As % of {item_property.child_of.name.lower()}"
 
         if year:
             chart_type = "bar"
@@ -354,10 +354,13 @@ class PropertyView(LocalView):
             chart.header["percentage_value"] = safe_name
             property_tooltip = alt.Tooltip(safe_name, format="%")
             agg_func = "mean"
+            simple_color = theme.all_colours["colour_dark_blue"]
         else:
             chart.header["value"] = safe_name
             property_tooltip = alt.Tooltip(safe_name)
             agg_func = "sum"
+            simple_color = theme.all_colours["colour_blue"]
+
         chart.header["authority__name"] = "Sector"
 
         sectors = Authority.objects.filter(Q(is_sector=True) | Q(
@@ -373,31 +376,35 @@ class PropertyView(LocalView):
 
         df = chart.apply_query(year_values)
 
-        df = group_to_other(df, safe_name, "Year", "Sector",
-                            cut_off=3, agg_func=agg_func, other_label="Other sectors")
-        chart.df = df
-
         # do bar charts by sector for each year.
         if year:
-            xx = alt.X("Sector", axis=alt.Axis(labelAngle=0), title="")
-            yy = alt.Y(safe_name, title=f"{safe_name} ({year.number})")
+            yy = alt.Y("Sector", axis=alt.Axis(
+                labelAngle=0), title=y_lab, sort="-x")
+            xx = alt.X(safe_name, title="")
+            chart.set_options(x=xx,
+                              y=yy,
+                              tooltip=["Sector", property_tooltip, "Year"],
+                              color=alt.value(simple_color)
+                              )
+            if percentage:
+                chart.options["x"].axis = alt.Axis(format='.0%')
+                chart.options["x"].scale = alt.Scale(domain=(0, 1))
         else:
-            xx = "Year"
-            yy = safe_name
-
-        chart.set_options(x=xx,
-                          y=yy,
-                          tooltip=["Sector", property_tooltip, "Year"],
-                          color="Sector"
-                          )
-
-        if not year:
+            # for overall chart, reduce to highest values
+            df = group_to_other(df, safe_name, "Year", "Sector",
+                                cut_off=3, agg_func=agg_func, other_label="Other sectors")
+            chart.df = df
             years = df["Year"].unique()
             years.sort()
-            chart.options["x"].axis = alt.Axis(format='d', values=years)
-        if percentage:
-            chart.options["y"].axis = alt.Axis(format='.0%')
-            chart.options["y"].scale = alt.Scale(domain=(0, 1))
+            x_axis = alt.Axis(format='d', values=years)
+            chart.set_options(x=alt.X("Year", axis=x_axis),
+                              y=alt.Y(safe_name, title=y_lab),
+                              tooltip=["Sector", property_tooltip, "Year"],
+                              color="Sector"
+                              )
+            if percentage:
+                chart.options["y"].axis = alt.Axis(format='.0%')
+                chart.options["y"].scale = alt.Scale(domain=(0, 1))
 
         chart.custom_settings = lambda x: x.configure_point(size=50)
 
@@ -710,13 +717,7 @@ class BodyStatisticView(LocalView):
             safe_name += " reindexed"
 
         title = f"Change over time"
-        if percentage:
-            title += f" as a percentage of {item_property.child_of.name.lower()}"
-            if reindex_on_earliest:
-                title += f" (indexed)"
-        else:
-            if reindex_on_earliest:
-                title += f" (indexed on start)"
+
         chart = AltairChart(name=safe_name, title=title, chart_type="line")
 
         df = main_df.copy()
@@ -730,6 +731,16 @@ class BodyStatisticView(LocalView):
 
         years = df["Year"].unique()
         years.sort()
+
+        # make correct subtitle/label for this chart
+        if percentage:
+            y_lab = f"As % of {item_property.child_of.name}"
+            if reindex_on_earliest:
+                y_lab = f"As % of {item_property.child_of.name} ({years[0]} indexed)"
+        else:
+            y_lab = f"Requests: {item_property.name.lower()}"
+            if reindex_on_earliest:
+                y_lab = f"Requests: {item_property.name.lower()} ({years[0]} indexed)"
 
         ev = df.loc[df["Year"] == years[0], ["Authority", safe_name]]
         ev = ev.rename(columns={safe_name: "Earliest Value"})
@@ -754,7 +765,7 @@ class BodyStatisticView(LocalView):
         chart.df = df
 
         chart.set_options(x="Year",
-                          y=safe_name,
+                          y=alt.Y(safe_name, title=y_lab),
                           tooltip=[safe_name, "Year"],
                           color="Authority",
                           )
@@ -770,9 +781,6 @@ class BodyStatisticView(LocalView):
             chart.options["y"].axis = alt.Axis(format='.0%')
             chart.options["y"].scale = alt.Scale(domain=(0, 1))
         if reindex_on_earliest:
-            chart.options["y"].title = "{item} ({year} indexed)".format(item=safe_name,
-                                                                        year=years[0])
-
             if setting_min != np.inf and setting_max != np.inf:
                 chart.options["y"].scale = alt.Scale(domain=(setting_min, setting_max
                                                              ))
@@ -817,7 +825,10 @@ class BodyView(LocalView):
 
         title = "{0}: requests received and resolved".format(authority.name)
 
-        chart = AltairChart(name=title, title=title, chart_type="line")
+        titlep = "Requests received and resolved"
+        y_lab = authority.name
+
+        chart = AltairChart(name=title, title=titlep, chart_type="line")
 
         properties = ["PI_ALL",
                       "PI_FULL"
@@ -835,7 +846,7 @@ class BodyView(LocalView):
 
         legend_options = alt.Legend(orient='bottom', labelLimit=300)
 
-        chart.set_options(y="Requests",
+        chart.set_options(y=alt.Y("Requests", title=y_lab),
                           x='Year',
                           tooltip=['Series',
                                    "Year",
