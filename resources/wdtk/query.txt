@@ -1,2 +1,4 @@
-select extract(year from created_at) as year, public_body_id, count(*) from info_requests where public_body_id = 7 and prominence <> 'hidden' and described_state not in ('error_message', 'gone_postal', 'requires_admin', 'not_foi')
+select extract(year from created_at) as year, public_body_id, count(*) from info_requests where prominence <> 'hidden' and described_state not in ('error_message', 'gone_postal', 'requires_admin', 'not_foi')
 group by year,  public_body_id
+
+select public_body_id, short_name, name from public_body_translations order by public_body_id

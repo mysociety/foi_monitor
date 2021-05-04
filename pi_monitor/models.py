@@ -69,8 +69,6 @@ class Jurisdiction(FlexiBulkModel):
         prop = self.properties.get(special)
         return prop
 
-
-
     @classmethod
     def populate(cls):
         cls.objects.all().delete()
@@ -99,7 +97,7 @@ class Jurisdiction(FlexiBulkModel):
         """
         label for when charts are copied
         """
-        return self.adapter().geo_label       
+        return self.adapter().geo_label
 
     def year_range(self):
         adapter = self.adapter()
