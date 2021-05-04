@@ -23,11 +23,11 @@ class CabinetAdapter(GenericAdapter):
     adapter to get Cabinet Office style input
     """
     start_year = 2010
-    end_year = 2019
+    end_year = 2020
     authority_name_column = "Government body"
     name = "Cabinet Office FOI"
     desc = "UK central government figures (collected and released by Cabinet Office)"
-    filename = "foi-statistics-q4-2019-and-annual-published-data2.csv"
+    filename = "foi-statistics-2020-published-data.csv"
     slug = "cabinetfoi"
     public_types = ["FOI"]
     private_types = []

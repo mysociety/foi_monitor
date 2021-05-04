@@ -19,7 +19,7 @@ class FoisaAdapter(GenericAdapter):
     adapter to get FOISA style input
     """
     start_year = 2013
-    end_year = 2019
+    end_year = 2020
     authority_name_column = "AuthorityName"
     name = "Scotland Information Request Statistics"
     desc = "Statistics of FOI, EIR and SAR for public authorities in Scotland (collected by OSIC)"
