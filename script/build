@@ -23,6 +23,6 @@ NOW=$(date +%s)
 docker tag mysocietyorg/$DOCKER_IMAGE_NAME:latest mysocietyorg/$DOCKER_IMAGE_NAME:${NOW}
 
 # Extract the database
-CONTAINER=$(docker create mysocietyorg/foi_monitor:latest)
+CONTAINER=$(docker create mysocietyorg/$DOCKER_IMAGE_NAME:latest)
 docker cp ${CONTAINER}:/app/databases/db.sqlite3 databases/db.sqlite3
 docker container rm $CONTAINER
