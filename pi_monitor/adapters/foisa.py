@@ -82,11 +82,9 @@ class FoisaAdapter(GenericAdapter):
             index=["authority_id"], values="count", aggfunc=np.sum)
         wdtk_df = wdtk_df.reset_index()
         wdtk_df = wdtk_df.rename(columns={"count": "WDTK FOI requests"})
-
         # merge in the new column
-        df = pd.merge(df, wdtk_df, left_on=[
+        df = pd.merge(df, wdtk_df, how="left", left_on=[
                       "authority_id"], right_on=["authority_id"])
-
         # two columns are named the same, this fixes that
         nh = []
         done_foi = False
