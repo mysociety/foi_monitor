@@ -82,7 +82,7 @@ class CabinetAdapter(GenericAdapter):
         wdtk_df = wdtk_df.rename(columns={"count": "WhatDoTheyKnow requests"})
         wdtk_df["Government body"] = wdtk_df["public_body_id"].apply(
             id_lookup.get)
-        df = pd.merge(df, wdtk_df, left_on=["year", "Government body"], right_on=[
+        df = pd.merge(df, wdtk_df, how="left", left_on=["year", "Government body"], right_on=[
                       "year", "Government body"])
 
 
