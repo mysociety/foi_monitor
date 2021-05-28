@@ -74,6 +74,11 @@ class CabinetAdapter(GenericAdapter):
             df[col] = pd.to_numeric(df[col])
 
         df["Government body"] = df["Government body"].apply(default_self)
+
+        # if because of a merger, there are two bodies with the same name in the same year, handle here.
+        df = df.groupby("Government body").aggregate("sum").reset_index()
+        df["year"] = year
+
         df["Sector"] = df["Government body"].map(sector_lookup)
 
         # merge in the wdtk counts
