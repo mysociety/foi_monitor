@@ -5,41 +5,34 @@ import pandas as pd
 from collections import defaultdict
 
 
-@pd.api.extensions.register_dataframe_accessor("quick")
-class QuickPandasDataFrame:
+def load_file(*args, **kwargs):
     """
-    extention to store local helper functions
+    Load a file (CSV or Excel) based on file extension
     """
-    localEmpty = "localEmpty"
+    lower_case_columns = kwargs.pop("lower_case_columns", False)
+    path = os.path.join(*args)
+    print("Opening : {path}".format(path=path))
+    ext = os.path.splitext(path)[1]
+    if ext in [".xlsx", '.xls']:
+        df = pd.read_excel(path, **kwargs)
+    else:  # Default to CSV
+        df = pd.read_csv(path, **kwargs)
+    if lower_case_columns:
+        df.columns = [x.lower().strip() for x in df.columns]
+    return df
 
-    def __init__(self, pandas_obj):
-        self._obj = pandas_obj
 
-    def load_file(*args, **kwargs):
-        lower_case_columns = False
-        if "lower_case_columns" in kwargs:
-            lower_case_columns = kwargs["lower_case_columns"]
-            del kwargs["lower_case_columns"]
-        path = os.path.join(*args)
-        print("Opening : {path}".format(path=path))
-        ext = os.path.splitext(path)[1]
-        if ext in [".xlsx", '.xls']:
-            func = pd.read_excel
-        if ext == ".csv":
-            func = pd.read_csv
-        df = func(path, **kwargs)
-        if lower_case_columns:
-            df.columns = [x.lower().strip() for x in df.columns]
-        return df
-
-    def to_map(self, col1name, col2name, default=localEmpty):
-        if default != self.__class__.localEmpty:
-            di = defaultdict(lambda: default)
-        else:
-            di = {}
-        col1 = self._obj[col1name]
-        col2 = self._obj[col2name]
-        return pd.Series(col2.values, index=col1).to_dict(into=di)
+def dataframe_to_map(df, col1name, col2name, default=None):
+    """
+    Create a dictionary mapping from two columns of a DataFrame
+    """
+    if default is not None:
+        di = defaultdict(lambda: default)
+        mapping = pd.Series(df[col2name].values, index=df[col1name]).to_dict()
+        di.update(mapping)
+        return di
+    else:
+        return pd.Series(df[col2name].values, index=df[col1name]).to_dict()
 
 
 class AdapterRegistry(object):
@@ -93,10 +86,10 @@ class GenericAdapter(object):
         return htmlmarkdown
 
     def get_authorities(self):
-        return pd.DataFrame.quick.load_file(self.resources_folder, self.authorites_desc_file)
+        return load_file(self.resources_folder, self.authorites_desc_file)
 
     def get_properties(self):
-        return pd.DataFrame.quick.load_file(self.resources_folder, self.property_desc_file)
+        return load_file(self.resources_folder, self.property_desc_file)
 
     def get_year(self, year: int, authority_lookup: dict):
         """

@@ -1,5 +1,5 @@
 
-from .base import GenericAdapter, AdapterRegistry
+from .base import GenericAdapter, AdapterRegistry, load_file, dataframe_to_map
 import numpy as np
 import pandas as pd
 
@@ -37,7 +37,7 @@ class CabinetAdapter(GenericAdapter):
 
     def get_year(self, year: int, authority_lookup: dict):
 
-        df = pd.DataFrame.quick.load_file(self.resources_folder, self.filename)
+        df = load_file(self.resources_folder, self.filename)
         df = df.rename(
             columns={'Total "resolvable" requests': "Total resolvable requests"})
 
@@ -57,9 +57,9 @@ class CabinetAdapter(GenericAdapter):
         alt["alt_name"] = alt["alt_name"].apply(lambda x: x.split("|"))
         alt = alt.explode("alt_name")
 
-        alt_name_lookup = alt.quick.to_map("alt_name", "Government body")
-        sector_lookup = authorities.quick.to_map("Government body", "sector")
-        id_lookup = authorities.quick.to_map("wdtk_id", "Government body")
+        alt_name_lookup = dataframe_to_map(alt, "alt_name", "Government body")
+        sector_lookup = dataframe_to_map(authorities, "Government body", "sector")
+        id_lookup = dataframe_to_map(authorities, "wdtk_id", "Government body")
 
 
         # replace alternate names with newer forms
@@ -82,7 +82,7 @@ class CabinetAdapter(GenericAdapter):
         df["Sector"] = df["Government body"].map(sector_lookup)
 
         # merge in the wdtk counts
-        wdtk_df = pd.DataFrame.quick.load_file(
+        wdtk_df = load_file(
             self.resources_folder, "wdtk_year_count.csv")
         wdtk_df = wdtk_df.rename(columns={"count": "WhatDoTheyKnow requests"})
         wdtk_df["Government body"] = wdtk_df["public_body_id"].apply(
