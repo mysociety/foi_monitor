@@ -2,47 +2,59 @@
 reformat wdtk data to match scottish ids
 """
 
-from useful_inkleby.files import QuickGrid
+import pandas as pd
 from collections import Counter
+import os
 
 resources_folder = r"C:\Users\alexj\Dropbox\mysociety\research_sites\resources\foisa"
 
 def get_wdtk_to_scottish_id():
-    qg = QuickGrid().open([resources_folder, "authorities.csv"])
+    path = os.path.join(resources_folder, "authorities.csv")
+    df = pd.read_csv(path)
     
     lookup = {}
     
-    for r in qg:
-        osic = int(r["authority_id"])
+    for index, row in df.iterrows():
+        osic = int(row["authority_id"])
         
         for x in range(1,12):
             col = "wdtk_id_{0}".format(x)
-            if r[col]:
-                lookup[int(r[col])] = osic
+            if col in row and pd.notna(row[col]) and str(row[col]).strip():
+                try:
+                    lookup[int(row[col])] = osic
+                except (ValueError, TypeError):
+                    pass  # Skip invalid values
             
     return lookup
 
 def create_wdtk_count(year=2013):
-    qg = QuickGrid().open([resources_folder, "info_request.csv"])
+    path = os.path.join(resources_folder, "info_request.csv")
+    df = pd.read_csv(path)
     lookup = get_wdtk_to_scottish_id()
     
-    qg.generate_col("foisa", lambda x: lookup.get(int(x["public_body_id"]),None) )
+    # Convert public_body_id to numeric, handling errors
+    df["public_body_id"] = pd.to_numeric(df["public_body_id"], errors='coerce')
+    
+    df["foisa"] = df["public_body_id"].apply(lambda x: lookup.get(int(x), None) if pd.notna(x) else None)
     
     ids = []
-    for r in qg:
-        if year != 'alltime' and r["date_part"] != str(year):
+    for index, row in df.iterrows():
+        if year != 'alltime' and str(row["date_part"]) != str(year):
             continue
-        if r["foisa"]:
-            ids.append(r["foisa"])
+        if pd.notna(row["foisa"]):
+            ids.append(row["foisa"])
 
     c = Counter(ids)
     
-    final = QuickGrid(header=["authority_id","year","count"])
-    
+    # Create new DataFrame with results
+    result_data = []
     for k, v in c.items():
-        final.add([k,year, v])
-        
-    final.save([resources_folder,"wdtk_{0}.csv".format(year)])
+        result_data.append([k, year, v])
+    
+    final = pd.DataFrame(result_data, columns=["authority_id", "year", "count"])
+    
+    output_path = os.path.join(resources_folder, "wdtk_{0}.csv".format(year))
+    final.to_csv(output_path, index=False)
 
 def create_counts():
     

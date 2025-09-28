@@ -100,7 +100,7 @@ class GenericAdapter(object):
 
     def get_year(self, year: int, authority_lookup: dict):
         """
-        return a QuickGrid with information for authorites in the year.
+        return a pandas DataFrame with information for authorities in the year.
         """
         print(year)
         print(authority_lookup)
