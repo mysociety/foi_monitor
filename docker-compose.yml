@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  web:
+    image: mysociety/foi-monitor:${TAG:-latest}
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    tty: true
+    environment:
+      SECRET_KEY: 'secret'
+      DEBUG: 1
+      EMAIL_HOST: email.svc
+      CACHE_FILE: 'data/cache'
+      GOOGLE_ANALYTICS: ${GOOGLE_ANALYTICS:-}
+      DJANGO_SUPERUSER_USERNAME: 'admin'
+      DJANGO_SUPERUSER_PASSWORD: 'password'
+      DJANGO_SUPERUSER_EMAIL: 'admin@localhost'
+    working_dir: /app
+
+volumes:
+  node_modules:
