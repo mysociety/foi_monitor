@@ -1,7 +1,15 @@
 import pandas as pd
 
 
-def group_to_other(df, values_col, years_col, labels_col, cut_off=2, agg_func="sum", other_label="Other"):
+def group_to_other(
+    df,
+    values_col,
+    years_col,
+    labels_col,
+    cut_off=2,
+    agg_func="sum",
+    other_label="Other",
+):
     """
     Group to get lowest values into an 'Other' category
     """
@@ -14,7 +22,11 @@ def group_to_other(df, values_col, years_col, labels_col, cut_off=2, agg_func="s
     df["grouped_labels"] = df[labels_col]
     df.loc[~df[labels_col].isin(top_sectors), "grouped_labels"] = other_label
 
-    gb = df.groupby(["grouped_labels", years_col]).agg({values_col: agg_func}).reset_index()
+    gb = (
+        df.groupby(["grouped_labels", years_col])
+        .agg({values_col: agg_func})
+        .reset_index()
+    )
     gb.columns = [labels_col, years_col, values_col]
     print(gb)
 

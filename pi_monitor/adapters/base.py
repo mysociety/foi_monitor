@@ -1,4 +1,3 @@
-
 import os
 import markdown
 import pandas as pd
@@ -13,7 +12,7 @@ def load_file(*args, **kwargs):
     path = os.path.join(*args)
     print("Opening : {path}".format(path=path))
     ext = os.path.splitext(path)[1]
-    if ext in [".xlsx", '.xls']:
+    if ext in [".xlsx", ".xls"]:
         df = pd.read_excel(path, **kwargs)
     else:  # Default to CSV
         df = pd.read_csv(path, **kwargs)
@@ -60,6 +59,7 @@ class GenericAdapter(object):
     and at least one that specifies the actual information
     (possibly seperated by year)
     """
+
     property_desc_file = "column_lookup.csv"
     authorites_desc_file = "authorities.csv"
 
@@ -81,7 +81,7 @@ class GenericAdapter(object):
         get markdown description
         """
         path = os.path.join(self.resources_folder, self.description_loc)
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             htmlmarkdown = markdown.markdown(f.read())
         return htmlmarkdown
 

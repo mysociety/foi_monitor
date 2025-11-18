@@ -1,22 +1,32 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict
-from itertools import groupby
-from os import POSIX_FADV_SEQUENTIAL
 
 import altair as alt
 import numpy as np
 import pandas as pd
-from research_common.charts import AltairChart, Table, query_to_df, group_to_other, theme
+from research_common.charts import (
+    AltairChart,
+    Table,
+    query_to_df,
+    group_to_other,
+    theme,
+)
 from research_common.views import AnchorChartsMixIn
 from django.conf import settings
-from django.db.models import OuterRef, Q, Subquery, Sum
+from django.db.models import Q
 from django.urls import reverse
-from django.utils.html import conditional_escape, escape
-from django_sourdough.views import LogicalSocialView, prelogic
-from django_sourdough.views.mixins import MarkDownView
+from django.utils.html import conditional_escape
+from django_sourdough.views import LogicalSocialView
 
-from .models import (Authority, Jurisdiction, Property, Value, Year,
-                     fix_percentage, get_link, intcomma)
+from .models import (
+    Authority,
+    Jurisdiction,
+    Property,
+    Value,
+    Year,
+    fix_percentage,
+    get_link,
+    intcomma,
+)
 
 
 class GenericSocial(object):
@@ -33,33 +43,35 @@ class LocalView(AnchorChartsMixIn, GenericSocial, LogicalSocialView):
         params = super().extra_params(context)
         if hasattr(settings, "SITE_ROOT"):
             params["SITE_ROOT"] = settings.SITE_ROOT
-        extra = {"social_settings": self.social_settings(params),
-                 "page_title": self._page_title(params)}
+        extra = {
+            "social_settings": self.social_settings(params),
+            "page_title": self._page_title(params),
+        }
         params.update(extra)
         return params
 
 
 class OverviewView(LocalView):
-
     template = "pi_monitor/overview.html"
-    url_patterns = [r'^']
+    url_patterns = [r"^"]
     url_name = "pi.overview"
     share_title = "Public Information Statistics"
     page_title = "Public Information Statistics"
     share_description = "Explore FOI information for different jurisdictions"
 
     def logic(self):
-        self.jurisdictions = Jurisdiction.objects.all().order_by('name')
+        self.jurisdictions = Jurisdiction.objects.all().order_by("name")
 
 
 class HomeView(LocalView):
-
     template = "pi_monitor/home.html"
-    url_patterns = [r'^(.*)/']
+    url_patterns = [r"^(.*)/"]
     url_name = "pi.home"
     share_title = "{{jurisdiction.name}} Statistics"
     page_title = "{{jurisdiction.name}} Statistics"
-    share_description = "Explore public information statistics for {{jurisdiction.name}}"
+    share_description = (
+        "Explore public information statistics for {{jurisdiction.name}}"
+    )
     args = ["jurisdiction_slug"]
 
     def bake_args(self):
@@ -67,26 +79,26 @@ class HomeView(LocalView):
             yield (j.slug,)
 
     def logic(self):
-        self.jurisdiction = Jurisdiction.objects.get(
-            slug=self.jurisdiction_slug)
+        self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
         self.desc = self.jurisdiction.adapter().get_description()
-        self.years = list(self.jurisdiction.years.order_by('number'))
+        self.years = list(self.jurisdiction.years.order_by("number"))
         self.current_year = self.years[-1].number
         self.all_time_chart = self.get_all_time_chart(self.jurisdiction)
         self.over_time_chart = self.get_over_time_chart(self.jurisdiction)
         self.type_distribution_chart = self.get_type_distribution_chart(
-            self.jurisdiction)
+            self.jurisdiction
+        )
 
     def get_over_time_chart(self, jurisdiction):
         """
         gets the all time number of requests split by sector and year
         """
 
-        title = "Change over time by sector ({0})".format(
-            jurisdiction.geo_label())
+        title = "Change over time by sector ({0})".format(jurisdiction.geo_label())
 
-        year_values = Value.objects.filter(authority__in=jurisdiction.sectors(),
-                                           property__special="PI_ALL")
+        year_values = Value.objects.filter(
+            authority__in=jurisdiction.sectors(), property__special="PI_ALL"
+        )
         year_values = year_values.exclude(year__number=9999)
 
         chart = AltairChart(name=title, title=title, chart_type="line")
@@ -97,28 +109,35 @@ class HomeView(LocalView):
 
         df = chart.apply_query(year_values)
 
-        df = group_to_other(df, "Public information requests",
-                            "Year", "Sector", cut_off=3, other_label="Other sectors")
+        df = group_to_other(
+            df,
+            "Public information requests",
+            "Year",
+            "Sector",
+            cut_off=3,
+            other_label="Other sectors",
+        )
         chart.df = df
 
         pir = df["Public information requests"]
-        df['percentage'] = pir / pir.sum()
+        df["percentage"] = pir / pir.sum()
 
-        chart.set_options(y="Public information requests",
-                          x=alt.X('Year', title=""),
-                          tooltip=['Sector',
-                                   "Year",
-                                   alt.Tooltip('Public information requests',  title="PIRs",
-                                               format=","),
-                                   alt.Tooltip('percentage',
-                                               format=",.2%")],
-                          color=alt.Color('Sector', sort="-y")
-                          )
+        chart.set_options(
+            y="Public information requests",
+            x=alt.X("Year", title=""),
+            tooltip=[
+                "Sector",
+                "Year",
+                alt.Tooltip("Public information requests", title="PIRs", format=","),
+                alt.Tooltip("percentage", format=",.2%"),
+            ],
+            color=alt.Color("Sector", sort="-y"),
+        )
 
         years = df["Year"].unique()
         years.sort()
 
-        chart.options["x"].axis = alt.Axis(format='d', values=years)
+        chart.options["x"].axis = alt.Axis(format="d", values=years)
 
         return chart
 
@@ -128,93 +147,109 @@ class HomeView(LocalView):
         """
 
         title = "Public information requests by sector ({0})".format(
-            jurisdiction.geo_label())
+            jurisdiction.geo_label()
+        )
 
-        year_values = Value.objects.filter(authority__in=jurisdiction.sectors(),
-                                           property__special="PI_ALL",
-                                           year__number=9999)
+        year_values = Value.objects.filter(
+            authority__in=jurisdiction.sectors(),
+            property__special="PI_ALL",
+            year__number=9999,
+        )
 
         chart = AltairChart(name=title, title=title, chart_type="bar")
 
-        header = {"authority__name": "Sector",
-                  "year__number": "Year",
-                  "value": "Public information requests"}
+        header = {
+            "authority__name": "Sector",
+            "year__number": "Year",
+            "value": "Public information requests",
+        }
 
         chart.header = header
         df = chart.apply_query(year_values)
 
-        year_totals = df.groupby(['Year']).sum().to_dict()[
-            'Public information requests']
+        year_totals = (
+            df.groupby(["Year"]).sum().to_dict()["Public information requests"]
+        )
 
-        def func(r): return r["Public information requests"] / \
-            year_totals[r["Year"]]
-        df['Percentage in year'] = df.apply(func, axis='columns')
+        def func(r):
+            return r["Public information requests"] / year_totals[r["Year"]]
 
-        chart.set_options(y=alt.Y('Sector', sort="-x", title=""),
-                          x='Public information requests',
-                          tooltip=['Sector',
-                                   alt.Tooltip('Public information requests',  title="PIRs",
-                                               format=","),
-                                   alt.Tooltip('Percentage in year', format="%"
-                                               )],
-                          )
+        df["Percentage in year"] = df.apply(func, axis="columns")
 
-        chart.set_text_options(text=alt.Text('Public information requests', format=".2s"),
-                               align='left',
-                               baseline='middle',
-                               dx=3)
+        chart.set_options(
+            y=alt.Y("Sector", sort="-x", title=""),
+            x="Public information requests",
+            tooltip=[
+                "Sector",
+                alt.Tooltip("Public information requests", title="PIRs", format=","),
+                alt.Tooltip("Percentage in year", format="%"),
+            ],
+        )
+
+        chart.set_text_options(
+            text=alt.Text("Public information requests", format=".2s"),
+            align="left",
+            baseline="middle",
+            dx=3,
+        )
 
         chart.data_source = "Data source: " + jurisdiction.data_source()
 
-        chart.options["x"].axis = alt.Axis(format='s')
+        chart.options["x"].axis = alt.Axis(format="s")
 
         return chart
 
     def get_type_distribution_chart(self, jurisdiction):
-
         avaliable_types = jurisdiction.adapter().avaliable_types
 
-        title = ", ".join(avaliable_types) + \
-            " volumes ({0})".format(jurisdiction.geo_label())
+        title = ", ".join(avaliable_types) + " volumes ({0})".format(
+            jurisdiction.geo_label()
+        )
 
-        special_labels = ["{type}_ALL".format(
-            type=x.upper()) for x in avaliable_types]
+        special_labels = ["{type}_ALL".format(type=x.upper()) for x in avaliable_types]
 
-        query = Value.objects.filter(authority__jurisdiction=jurisdiction,
-                                     authority__is_overall=True,
-                                     property__special__in=special_labels)
+        query = Value.objects.filter(
+            authority__jurisdiction=jurisdiction,
+            authority__is_overall=True,
+            property__special__in=special_labels,
+        )
 
         query = query.exclude(year__number=9999)
 
         chart = AltairChart(name=title, title=title, chart_type="line")
 
         chart.data_source = "Data source: " + jurisdiction.data_source()
-        chart.header = {"property__name": "Request type",
-                        "year__number": "Year",
-                        "value": "Information requests"}
+        chart.header = {
+            "property__name": "Request type",
+            "year__number": "Year",
+            "value": "Information requests",
+        }
 
         df = chart.apply_query(query)
 
-        year_totals = df.groupby(['Year']).sum().to_dict()[
-            'Information requests']
+        year_totals = df.groupby(["Year"]).sum().to_dict()["Information requests"]
 
-        def func(r): return r["Information requests"] / year_totals[r["Year"]]
-        df['Percentage in year'] = df.apply(func, axis='columns')
+        def func(r):
+            return r["Information requests"] / year_totals[r["Year"]]
 
-        chart.set_options(x=alt.X('Year', title=""),
-                          y="Information requests",
-                          color=alt.Color("Request type", sort="-y"),
-                          tooltip=["Request type", "Year",
-                                   alt.Tooltip('Information requests',
-                                               format=","),
-                                   alt.Tooltip('Percentage in year',
-                                               format=",.2%")],
-                          )
+        df["Percentage in year"] = df.apply(func, axis="columns")
+
+        chart.set_options(
+            x=alt.X("Year", title=""),
+            y="Information requests",
+            color=alt.Color("Request type", sort="-y"),
+            tooltip=[
+                "Request type",
+                "Year",
+                alt.Tooltip("Information requests", format=","),
+                alt.Tooltip("Percentage in year", format=",.2%"),
+            ],
+        )
 
         years = df["Year"].unique()
         years.sort()
 
-        chart.options["x"].axis = alt.Axis(format='d', values=years)
+        chart.options["x"].axis = alt.Axis(format="d", values=years)
 
         chart.custom_settings = lambda x: x.configure_point(size=50)
 
@@ -228,72 +263,76 @@ def zero_if_not(v):
 
 
 class PropertyView(LocalView):
-
     template = "pi_monitor/property.html"
-    url_patterns = [r'^(.*)/property/(.*)/(.*)/']
+    url_patterns = [r"^(.*)/property/(.*)/(.*)/"]
     url_name = "pi.property"
     share_title = "{{property.name}} Statistics"
     page_title = "{{property.name}} Statistics"
     share_description = "{{jurisdiction.name}} - Statistics for {{jurisdiction.name}}"
-    args = ["jurisdiction_slug", 'property_slug', 'year_slug']
+    args = ["jurisdiction_slug", "property_slug", "year_slug"]
 
     def bake_args(self):
         for j in Jurisdiction.objects.all():
             for a in j.properties.all():
                 for y in j.years.all():
-                    yield (j.slug, a.slug, y.slug,)
+                    yield (
+                        j.slug,
+                        a.slug,
+                        y.slug,
+                    )
 
     def logic(self):
-        self.jurisdiction = Jurisdiction.objects.get(
-            slug=self.jurisdiction_slug)
+        self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
 
-        self.property = Property.objects.get(jurisdiction=self.jurisdiction,
-                                             slug=self.property_slug)
+        self.property = Property.objects.get(
+            jurisdiction=self.jurisdiction, slug=self.property_slug
+        )
         self.years = self.jurisdiction.years.filter(
-            values__property=self.property).distinct()
-        self.year = Year.objects.get(jurisdiction=self.jurisdiction,
-                                     slug=self.year_slug)
+            values__property=self.property
+        ).distinct()
+        self.year = Year.objects.get(
+            jurisdiction=self.jurisdiction, slug=self.year_slug
+        )
         if self.year_slug == "alltime":
             self.time_chart = self.property_over_time(self.property)
             if self.property.child_of_id:
                 self.time_chart_percent = self.property_over_time(
-                    self.property, percentage=True)
+                    self.property, percentage=True
+                )
         else:
-            self.time_chart = self.property_over_time(
-                self.property, year=self.year)
+            self.time_chart = self.property_over_time(self.property, year=self.year)
             if self.property.child_of_id:
                 self.time_chart_percent = self.property_over_time(
-                    self.property, percentage=True, year=self.year)
+                    self.property, percentage=True, year=self.year
+                )
             # add new bar chart based on property and year
 
-        self.sector_table = self.public_bodies_table(self.property,
-                                                     self.year,
-                                                     "Sector",
-                                                     self.jurisdiction.sectors())
+        self.sector_table = self.public_bodies_table(
+            self.property, self.year, "Sector", self.jurisdiction.sectors()
+        )
 
-        self.authority_table = self.public_bodies_table(self.property,
-                                                        self.year,
-                                                        "Authority",
-                                                        self.jurisdiction.bodies())
+        self.authority_table = self.public_bodies_table(
+            self.property, self.year, "Authority", self.jurisdiction.bodies()
+        )
 
     def public_bodies_table(self, property, year, name, authority_query):
-
         table = Table(name="counts by " + property.name)
 
         value_query = Value.objects.filter(
-            year=year,
-            property=property,
-            authority__in=authority_query)
+            year=year, property=property, authority__in=authority_query
+        )
 
-        value_query = value_query.order_by('-value')
+        value_query = value_query.order_by("-value")
 
         render_full = self.jurisdiction.authorities.filter(
-            render_full=True).values_list('slug', flat=True)
+            render_full=True
+        ).values_list("slug", flat=True)
 
         def authority_link(authority):
-
-            authority_url = reverse('pi.body', args=(self.year.jurisdiction.slug,
-                                                     authority.slug, self.year.slug))
+            authority_url = reverse(
+                "pi.body",
+                args=(self.year.jurisdiction.slug, authority.slug, self.year.slug),
+            )
             return get_link(authority.name, authority_url)
 
         def get_linked_value(row):
@@ -302,20 +341,22 @@ class PropertyView(LocalView):
             if body_slug not in render_full:
                 return value
             else:
-                url = reverse('pi.bodystat', args=(self.jurisdiction.slug, body_slug,
-                                                   self.property.slug))
+                url = reverse(
+                    "pi.bodystat",
+                    args=(self.jurisdiction.slug, body_slug, self.property.slug),
+                )
                 return get_link(value, url)
 
-        auth_links = {x.slug: authority_link(
-            x) for x in self.jurisdiction.authorities.all()}
+        auth_links = {
+            x.slug: authority_link(x) for x in self.jurisdiction.authorities.all()
+        }
 
         table.header["authority__slug"] = name
         if name == "Authority":
             table.header["authority__sector__slug"] = "Sector"
         table.header["value"] = "Count"
         if self.property.child_of:
-            col_name = "Percentage of " + \
-                self.property.child_of.name
+            col_name = "Percentage of " + self.property.child_of.name
             table.header["percentage_value"] = col_name
             table.format[col_name] = fix_percentage
 
@@ -363,11 +404,14 @@ class PropertyView(LocalView):
 
         chart.header["authority__name"] = "Sector"
 
-        sectors = Authority.objects.filter(Q(is_sector=True) | Q(
-            is_overall=True), jurisdiction=self.jurisdiction,)
+        sectors = Authority.objects.filter(
+            Q(is_sector=True) | Q(is_overall=True),
+            jurisdiction=self.jurisdiction,
+        )
 
-        year_values = Value.objects.filter(authority__in=sectors,
-                                           property=item_property).order_by('year__number')
+        year_values = Value.objects.filter(
+            authority__in=sectors, property=item_property
+        ).order_by("year__number")
 
         year_values = year_values.exclude(year__number=9999)
 
@@ -378,32 +422,40 @@ class PropertyView(LocalView):
 
         # do bar charts by sector for each year.
         if year:
-            yy = alt.Y("Sector", axis=alt.Axis(
-                labelAngle=0), title=y_lab, sort="-x")
+            yy = alt.Y("Sector", axis=alt.Axis(labelAngle=0), title=y_lab, sort="-x")
             xx = alt.X(safe_name, title="")
-            chart.set_options(x=xx,
-                              y=yy,
-                              tooltip=["Sector", property_tooltip, "Year"],
-                              color=alt.value(simple_color)
-                              )
+            chart.set_options(
+                x=xx,
+                y=yy,
+                tooltip=["Sector", property_tooltip, "Year"],
+                color=alt.value(simple_color),
+            )
             if percentage:
-                chart.options["x"].axis = alt.Axis(format='.0%')
+                chart.options["x"].axis = alt.Axis(format=".0%")
                 chart.options["x"].scale = alt.Scale(domain=(0, 1))
         else:
             # for overall chart, reduce to highest values
-            df = group_to_other(df, safe_name, "Year", "Sector",
-                                cut_off=3, agg_func=agg_func, other_label="Other sectors")
+            df = group_to_other(
+                df,
+                safe_name,
+                "Year",
+                "Sector",
+                cut_off=3,
+                agg_func=agg_func,
+                other_label="Other sectors",
+            )
             chart.df = df
             years = df["Year"].unique()
             years.sort()
-            x_axis = alt.Axis(format='d', values=years)
-            chart.set_options(x=alt.X("Year", axis=x_axis),
-                              y=alt.Y(safe_name, title=y_lab),
-                              tooltip=["Sector", property_tooltip, "Year"],
-                              color="Sector"
-                              )
+            x_axis = alt.Axis(format="d", values=years)
+            chart.set_options(
+                x=alt.X("Year", axis=x_axis),
+                y=alt.Y(safe_name, title=y_lab),
+                tooltip=["Sector", property_tooltip, "Year"],
+                color="Sector",
+            )
             if percentage:
-                chart.options["y"].axis = alt.Axis(format='.0%')
+                chart.options["y"].axis = alt.Axis(format=".0%")
                 chart.options["y"].scale = alt.Scale(domain=(0, 1))
 
         chart.custom_settings = lambda x: x.configure_point(size=50)
@@ -412,32 +464,34 @@ class PropertyView(LocalView):
 
 
 class YearView(LocalView):
-
     template = "pi_monitor/year.html"
-    url_patterns = [r'^(.*)/years/(.*)/']
+    url_patterns = [r"^(.*)/years/(.*)/"]
     url_name = "pi.year"
     share_title = "{{jurisdiction.name}} Statistics - {{year.number}}"
     page_title = "{{jurisdiction.name}} Statistics - {{year.number}}"
     share_description = "Information request statistics"
-    args = ['jurisdiction_slug', 'year_slug']
+    args = ["jurisdiction_slug", "year_slug"]
 
     def bake_args(self):
         for j in Jurisdiction.objects.all():
             for y in j.years.all():
-                yield (j.slug, y.slug,)
+                yield (
+                    j.slug,
+                    y.slug,
+                )
 
     def logic(self):
-        self.jurisdiction = Jurisdiction.objects.get(
-            slug=self.jurisdiction_slug)
+        self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
         self.years = self.jurisdiction.years.all()
         self.year = self.years.get(slug=self.year_slug)
-        adapter = self.jurisdiction.adapter()
+        self.jurisdiction.adapter()
 
-        relevant_auths = Value.objects.filter(year=self.year,
-                                              authority__is_overall=False,
-                                              authority__is_sector=False,
-                                              property__special="PI_ALL"
-                                              )
+        relevant_auths = Value.objects.filter(
+            year=self.year,
+            authority__is_overall=False,
+            authority__is_sector=False,
+            property__special="PI_ALL",
+        )
 
         relevant_auths = relevant_auths.exclude(value=0)
 
@@ -450,15 +504,16 @@ class YearView(LocalView):
         self.relevant_auths = relevant_auths.count()
 
         self.authority = Authority.objects.get(
-            jurisdiction=self.jurisdiction, is_overall=True)
+            jurisdiction=self.jurisdiction, is_overall=True
+        )
         self.authority.prepare_stats(self.year)
         self.stats = self.authority.stats
         self.sectors = self.jurisdiction.sectors()
         self.sector_chart = self.sector_distribution(self.year)
-        self.sector_table = self.public_bodies_table(
-            self.year, "Sector", self.sectors)
+        self.sector_table = self.public_bodies_table(self.year, "Sector", self.sectors)
         self.bodies_table = self.public_bodies_table(
-            self.year, "Public Bodies", self.jurisdiction.bodies())
+            self.year, "Public Bodies", self.jurisdiction.bodies()
+        )
 
     def public_bodies_table(self, year, name, body_query):
         """
@@ -466,6 +521,7 @@ class YearView(LocalView):
         in 'year'
         name expects either 'Public Bodies' or 'Sectors'
         """
+
         # function to adapt link
         def authority_link(authority):
             """
@@ -473,10 +529,9 @@ class YearView(LocalView):
             """
             j_slug = self.year.jurisdiction.slug
             year_slug = self.year.slug
-            authority_url = reverse('pi.body', args=(j_slug,
-                                                     authority.slug,
-                                                     year_slug))
+            authority_url = reverse("pi.body", args=(j_slug, authority.slug, year_slug))
             return get_link(authority.name, authority_url)
+
         valid_auths = self.jurisdiction.authorities.all()
         auth_links = {x.slug: authority_link(x) for x in valid_auths}
 
@@ -488,12 +543,12 @@ class YearView(LocalView):
         public_types = ["{type}_ALL".format(type=x.upper()) for x in pts]
         public_types_full = ["{type}_FULL".format(type=x.upper()) for x in pts]
 
-        needed_values = ["PI_ALL"] + \
-            public_types + ["PI_FULL"] + public_types_full
+        needed_values = ["PI_ALL"] + public_types + ["PI_FULL"] + public_types_full
 
         # map special values to local values
-        properties = Property.objects.filter(jurisdiction=self.jurisdiction,
-                                             special__in=needed_values)
+        properties = Property.objects.filter(
+            jurisdiction=self.jurisdiction, special__in=needed_values
+        )
         properties = {x.special: x.name for x in properties}
 
         # create basic table of authorities and sectors
@@ -503,15 +558,20 @@ class YearView(LocalView):
         df = table.apply_query(body_query)
 
         # get values and convert to pivot_table
-        values = Value.objects.filter(property__special__in=needed_values,
-                                      year=year,
-                                      authority__in=body_query)
-        values = query_to_df(values, {"property__name": "property",
-                                      "authority__slug": "authority",
-                                      "value": "value"})
-        pivot = pd.pivot_table(values, values="value",
-                               index="authority",
-                               columns=["property"])
+        values = Value.objects.filter(
+            property__special__in=needed_values, year=year, authority__in=body_query
+        )
+        values = query_to_df(
+            values,
+            {
+                "property__name": "property",
+                "authority__slug": "authority",
+                "value": "value",
+            },
+        )
+        pivot = pd.pivot_table(
+            values, values="value", index="authority", columns=["property"]
+        )
 
         # reorder columns to correct order
         pivot = pivot[[properties[x] for x in needed_values]]
@@ -552,25 +612,29 @@ class YearView(LocalView):
         chart.header["authority__name"] = "Sector"
         chart.header["value"] = "Public information requests"
 
-        year_values = Value.objects.filter(year=year,
-                                           authority__in=sectors,
-                                           property__special="PI_ALL")
+        year_values = Value.objects.filter(
+            year=year, authority__in=sectors, property__special="PI_ALL"
+        )
         df = chart.apply_query(year_values)
         pir = df["Public information requests"]
         df["Percentage"] = pir / pir.sum()
 
-        chart.set_options(x="Public information requests",
-                          y=alt.Y("Sector", sort="-x"),
-                          tooltip=["Sector",
-                                   alt.Tooltip(
-                                       "Public information requests", format=","),
-                                   alt.Tooltip("Percentage", format=",.2%")]
-                          )
+        chart.set_options(
+            x="Public information requests",
+            y=alt.Y("Sector", sort="-x"),
+            tooltip=[
+                "Sector",
+                alt.Tooltip("Public information requests", format=","),
+                alt.Tooltip("Percentage", format=",.2%"),
+            ],
+        )
 
-        chart.set_text_options(text=alt.Text('Public information requests', format=".2s"),
-                               align='left',
-                               baseline='middle',
-                               dx=3)
+        chart.set_text_options(
+            text=alt.Text("Public information requests", format=".2s"),
+            align="left",
+            baseline="middle",
+            dx=3,
+        )
 
         chart.custom_settings = lambda x: x.configure_point(size=50)
 
@@ -582,11 +646,11 @@ class BodyStatisticView(LocalView):
     change over time and index comparisions for a specific
     body on a specific statistic
     """
+
     template = "pi_monitor/bodystat.html"
-    url_patterns = [r'^(.*)/body/(.*)/property/(.*)/']
+    url_patterns = [r"^(.*)/body/(.*)/property/(.*)/"]
     url_name = "pi.bodystat"
-    args = ['jurisdiction_slug', 'body_slug',
-            'property_slug', ("bake_variables", {})]
+    args = ["jurisdiction_slug", "body_slug", "property_slug", ("bake_variables", {})]
     share_title = "{{authority.name}} -- {{property.name}}"
     page_title = "{{authority.name}} -- {{property.name}}"
     share_description = "{{jurisdiction.name}} - Information request statistics"
@@ -601,10 +665,12 @@ class BodyStatisticView(LocalView):
                 print("fetching {0}".format(a.slug))
                 bake_df = self.get_dataframe(a)
                 for p in j.properties.all():
-                    bake_variables = {"jurisdiction": j,
-                                      "authority": a,
-                                      "property": p,
-                                      "bake_df": bake_df}
+                    bake_variables = {
+                        "jurisdiction": j,
+                        "authority": a,
+                        "property": p,
+                        "bake_df": bake_df,
+                    }
 
                     yield (j.slug, a.slug, p.slug, bake_variables)
 
@@ -614,23 +680,26 @@ class BodyStatisticView(LocalView):
                 setattr(self, k, v)
 
     def get_dataframe(self, authority, property=None):
-
         sectors = [authority.id]
         if authority.sector_id:
             sectors.append(authority.sector_id)
 
-        year_values = Value.objects.filter(Q(authority_id__in=sectors) | Q(
-            authority__is_overall=True)).order_by('year__number')
+        year_values = Value.objects.filter(
+            Q(authority_id__in=sectors) | Q(authority__is_overall=True)
+        ).order_by("year__number")
         if property:
             year_values = year_values.filter(property=property)
-        year_values = year_values.exclude(
-            year__number=9999).prefetch_related('year', 'authority')
+        year_values = year_values.exclude(year__number=9999).prefetch_related(
+            "year", "authority"
+        )
 
-        header = {"year__number": "Year",
-                  "percentage_value": "percentage_value",
-                  "value": "value",
-                  "authority__name": "Authority",
-                  "property_id": "property_id"}
+        header = {
+            "year__number": "Year",
+            "percentage_value": "percentage_value",
+            "value": "value",
+            "authority__name": "Authority",
+            "property_id": "property_id",
+        }
 
         main_df = query_to_df(year_values, header)
 
@@ -638,12 +707,13 @@ class BodyStatisticView(LocalView):
 
     def logic(self):
         if not self.bake_variables:
-            self.jurisdiction = Jurisdiction.objects.get(
-                slug=self.jurisdiction_slug)
+            self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
             self.authority = Authority.objects.get(
-                slug=self.body_slug, jurisdiction=self.jurisdiction)
+                slug=self.body_slug, jurisdiction=self.jurisdiction
+            )
             self.property = Property.objects.filter(
-                slug=self.property_slug, jurisdiction=self.jurisdiction).select_related('child_of')
+                slug=self.property_slug, jurisdiction=self.jurisdiction
+            ).select_related("child_of")
             self.property = self.property[0]
             main_df = self.get_dataframe(self.authority, self.property)
         else:
@@ -655,12 +725,15 @@ class BodyStatisticView(LocalView):
 
         self.time_chart = self.property_over_time(self.property, main_df)
         self.time_chart_indexed = self.property_over_time(
-            self.property, main_df, reindex_on_earliest=True)
+            self.property, main_df, reindex_on_earliest=True
+        )
         if self.property.child_of_id:
             self.time_chart_percent = self.property_over_time(
-                self.property, main_df, percentage=True)
+                self.property, main_df, percentage=True
+            )
             self.time_chart_percent_indexed = self.property_over_time(
-                self.property, main_df, percentage=True, reindex_on_earliest=True)
+                self.property, main_df, percentage=True, reindex_on_earliest=True
+            )
         self.year_table = self.get_table(main_df)
 
     def get_table(self, main_df):
@@ -668,9 +741,9 @@ class BodyStatisticView(LocalView):
         table of property over time
         """
 
-        title = "Over time - {body} - {prop}".format(body=self.authority.name,
-                                                     prop=self.property.name
-                                                     )
+        title = "Over time - {body} - {prop}".format(
+            body=self.authority.name, prop=self.property.name
+        )
         table = Table(name=title)
 
         df = main_df[main_df["Authority"] == self.authority.name]
@@ -682,28 +755,31 @@ class BodyStatisticView(LocalView):
         df = df.rename(columns={"value": "Value"})
 
         if self.property.child_of_id:
-            df = df.rename(columns={"percentage_value": "% of " +
-                                    self.property.child_of.name})
+            df = df.rename(
+                columns={"percentage_value": "% of " + self.property.child_of.name}
+            )
         else:
             df = df.drop(columns=["percentage_value"])
 
         table.df = df
 
         def format_year(year):
-
-            url = reverse('pi.body', args=(self.jurisdiction.slug,
-                                           self.authority.slug, str(int(year))))
+            url = reverse(
+                "pi.body",
+                args=(self.jurisdiction.slug, self.authority.slug, str(int(year))),
+            )
             return get_link(int(year), url)
 
         table.format["Year"] = format_year
         table.format["Value"] = lambda x: intcomma(int(x))
         if self.property.child_of:
-            table.format["% of " +
-                         self.property.child_of.name] = fix_percentage
+            table.format["% of " + self.property.child_of.name] = fix_percentage
 
         return table
 
-    def property_over_time(self, item_property, main_df, percentage=False, reindex_on_earliest=False):
+    def property_over_time(
+        self, item_property, main_df, percentage=False, reindex_on_earliest=False
+    ):
         """
         table to show counts or percentages over time
         """
@@ -716,7 +792,7 @@ class BodyStatisticView(LocalView):
         if reindex_on_earliest:
             safe_name += " reindexed"
 
-        title = f"Change over time"
+        title = "Change over time"
 
         chart = AltairChart(name=safe_name, title=title, chart_type="line")
 
@@ -754,8 +830,7 @@ class BodyStatisticView(LocalView):
                 # similarly doesn't work if reindexing off 0
                 return None
 
-            df[safe_name] = (
-                df[safe_name] / df["Earliest Value"]) * 100
+            df[safe_name] = (df[safe_name] / df["Earliest Value"]) * 100
             setting_min = df[safe_name].min()
             setting_max = df[safe_name].max()
 
@@ -764,11 +839,12 @@ class BodyStatisticView(LocalView):
 
         chart.df = df
 
-        chart.set_options(x="Year",
-                          y=alt.Y(safe_name, title=y_lab),
-                          tooltip=[safe_name, "Year"],
-                          color="Authority",
-                          )
+        chart.set_options(
+            x="Year",
+            y=alt.Y(safe_name, title=y_lab),
+            tooltip=[safe_name, "Year"],
+            color="Authority",
+        )
 
         jurisdiction = item_property.jurisdiction.data_source()
         chart.data_source = "Data source: {0}".format(jurisdiction)
@@ -776,14 +852,13 @@ class BodyStatisticView(LocalView):
         # too fiddly to get working automatically at the moment
         # chart.set_text_options(text="line_label", dx=-10, baseline="middle", align="right")
 
-        chart.options["x"].axis = alt.Axis(format='d', values=years)
+        chart.options["x"].axis = alt.Axis(format="d", values=years)
         if percentage and not reindex_on_earliest:
-            chart.options["y"].axis = alt.Axis(format='.0%')
+            chart.options["y"].axis = alt.Axis(format=".0%")
             chart.options["y"].scale = alt.Scale(domain=(0, 1))
         if reindex_on_earliest:
             if setting_min != np.inf and setting_max != np.inf:
-                chart.options["y"].scale = alt.Scale(domain=(setting_min, setting_max
-                                                             ))
+                chart.options["y"].scale = alt.Scale(domain=(setting_min, setting_max))
 
         chart.custom_settings = lambda x: x.configure_point(size=50)
 
@@ -791,11 +866,10 @@ class BodyStatisticView(LocalView):
 
 
 class BodyView(LocalView):
-
     template = "pi_monitor/body.html"
-    url_patterns = [r'^(.*)/body/(.*)/(.*)/']
+    url_patterns = [r"^(.*)/body/(.*)/(.*)/"]
     url_name = "pi.body"
-    args = ['jurisdiction_slug', 'body_slug', 'year_slug']
+    args = ["jurisdiction_slug", "body_slug", "year_slug"]
     share_title = "Statistics - {{authority.name}}"
     page_title = "Statistics - {{authority.name}}"
     share_description = "{{jurisdiction.name}} - Information request statistics"
@@ -804,13 +878,17 @@ class BodyView(LocalView):
         for j in Jurisdiction.objects.all():
             for a in j.authorities.all():
                 for y in a.valid_years():
-                    yield (j.slug, a.slug, y.slug,)
+                    yield (
+                        j.slug,
+                        a.slug,
+                        y.slug,
+                    )
 
     def logic(self):
-        self.jurisdiction = Jurisdiction.objects.get(
-            slug=self.jurisdiction_slug)
+        self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
         self.authority = Authority.objects.get(
-            slug=self.body_slug, jurisdiction=self.jurisdiction)
+            slug=self.body_slug, jurisdiction=self.jurisdiction
+        )
         self.years = self.authority.valid_years()
         self.year = self.years.get(slug=self.year_slug)
         self.chart = self.resolve_chart(self.authority)
@@ -830,12 +908,11 @@ class BodyView(LocalView):
 
         chart = AltairChart(name=title, title=titlep, chart_type="line")
 
-        properties = ["PI_ALL",
-                      "PI_FULL"
-                      ]
+        properties = ["PI_ALL", "PI_FULL"]
 
-        year_values = Value.objects.filter(authority=authority,
-                                           property__special__in=properties)
+        year_values = Value.objects.filter(
+            authority=authority, property__special__in=properties
+        )
         year_values = year_values.exclude(year__number=9999)
 
         chart.header["year__number"] = "Year"
@@ -844,22 +921,23 @@ class BodyView(LocalView):
         chart.header["percentage_value"] = "% of Total"
         chart.apply_query(year_values)
 
-        legend_options = alt.Legend(orient='bottom', labelLimit=300)
+        legend_options = alt.Legend(orient="bottom", labelLimit=300)
 
-        chart.set_options(y=alt.Y("Requests", title=y_lab),
-                          x='Year',
-                          tooltip=['Series',
-                                   "Year",
-                                   alt.Tooltip('Requests',
-                                               format=","),
-                                   alt.Tooltip('% of Total',
-                                               format=",.2%")],
-                          color=alt.Color('Series', legend=legend_options)
-                          )
+        chart.set_options(
+            y=alt.Y("Requests", title=y_lab),
+            x="Year",
+            tooltip=[
+                "Series",
+                "Year",
+                alt.Tooltip("Requests", format=","),
+                alt.Tooltip("% of Total", format=",.2%"),
+            ],
+            color=alt.Color("Series", legend=legend_options),
+        )
 
         years = chart.df["Year"].unique()
         years.sort()
 
-        chart.options["x"].axis = alt.Axis(format='d', values=years)
+        chart.options["x"].axis = alt.Axis(format="d", values=years)
 
         return chart

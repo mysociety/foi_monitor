@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """
-script for manually running various commands, not meant to be 
+script for manually running various commands, not meant to be
 in regular use
 """
+
 import os
-import sys
 
 try:
     os.environ.pop("DJANGO_SETTINGS_MODULE")

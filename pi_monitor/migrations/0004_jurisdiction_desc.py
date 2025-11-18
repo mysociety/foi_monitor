@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pi_monitor', '0003_auto_20201008_1228'),
+        ("pi_monitor", "0003_auto_20201008_1228"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='jurisdiction',
-            name='desc',
-            field=models.CharField(default='', max_length=255),
+            model_name="jurisdiction",
+            name="desc",
+            field=models.CharField(default="", max_length=255),
         ),
     ]

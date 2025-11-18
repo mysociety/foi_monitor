@@ -1,7 +1,7 @@
-
 from .base import GenericAdapter, AdapterRegistry, load_file, dataframe_to_map
 import pandas as pd
 import numpy as np
+
 
 def zero_if_none(v):
     """
@@ -18,6 +18,7 @@ class FoisaAdapter(GenericAdapter):
     """
     adapter to get FOISA style input
     """
+
     start_year = 2013
     end_year = 2020
     authority_name_column = "AuthorityName"
@@ -36,23 +37,28 @@ class FoisaAdapter(GenericAdapter):
         else:
             filename = year
 
-        df = load_file(self.resources_folder,
-                       "{year}.csv".format(year=filename))
+        df = load_file(self.resources_folder, "{year}.csv".format(year=filename))
 
-        fill_na = ["EIR requests", "EIRs - full release",
-                   "FOISA requests", "FOISA - full release"]
+        fill_na = [
+            "EIR requests",
+            "EIRs - full release",
+            "FOISA requests",
+            "FOISA - full release",
+        ]
         for n in fill_na:
             df[n] = df[n].fillna(0)
         df["Public Information Requests"] = df["FOISA requests"] + df["EIR requests"]
-        df["Public Information Requests (comparison)"] = df["Public Information Requests"]
+        df["Public Information Requests (comparison)"] = df[
+            "Public Information Requests"
+        ]
 
-        df["Public Information Requests - full release"] = df["FOISA - full release"] + \
-            df["EIRs - full release"]
+        df["Public Information Requests - full release"] = (
+            df["FOISA - full release"] + df["EIRs - full release"]
+        )
 
         # get mappings between WDTK and FOISA ids
 
-        wdtk_id_lookup = load_file(self.resources_folder,
-                                   "authorities.csv")
+        wdtk_id_lookup = load_file(self.resources_folder, "authorities.csv")
 
         id_lookup = {}
         for r in range(1, 12):
@@ -62,29 +68,30 @@ class FoisaAdapter(GenericAdapter):
             id_lookup.update(new_ids)
 
         # merge in the wdtk counts
-        wdtk_df = load_file(
-            self.resources_folder, "wdtk_year_count.csv")
-        
+        wdtk_df = load_file(self.resources_folder, "wdtk_year_count.csv")
+
         # add all values up for year
         if year == 9999:
             wdtk_df = wdtk_df.pivot_table(
-                index=["public_body_id"], values="count", aggfunc=np.sum)
+                index=["public_body_id"], values="count", aggfunc=np.sum
+            )
             wdtk_df = wdtk_df.reset_index()
         else:
             wdtk_df = wdtk_df[wdtk_df["year"] == year]
             wdtk_df = wdtk_df.drop(columns="year")
-        
-        wdtk_df["authority_id"] = wdtk_df["public_body_id"].apply(
-            id_lookup.get)
+
+        wdtk_df["authority_id"] = wdtk_df["public_body_id"].apply(id_lookup.get)
         wdtk_df = wdtk_df[~wdtk_df["authority_id"].isnull()]
         # fold together different wdtk ids covered by the same foisa id
         wdtk_df = wdtk_df.pivot_table(
-            index=["authority_id"], values="count", aggfunc=np.sum)
+            index=["authority_id"], values="count", aggfunc=np.sum
+        )
         wdtk_df = wdtk_df.reset_index()
         wdtk_df = wdtk_df.rename(columns={"count": "WDTK FOI requests"})
         # merge in the new column
-        df = pd.merge(df, wdtk_df, how="left", left_on=[
-                      "authority_id"], right_on=["authority_id"])
+        df = pd.merge(
+            df, wdtk_df, how="left", left_on=["authority_id"], right_on=["authority_id"]
+        )
         # two columns are named the same, this fixes that
         nh = []
         done_foi = False

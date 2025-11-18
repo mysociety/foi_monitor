@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pi_monitor', '0002_property_special'),
+        ("pi_monitor", "0002_property_special"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='authority',
-            name='local_id',
+            model_name="authority",
+            name="local_id",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='property',
-            name='local_id',
+            model_name="property",
+            name="local_id",
             field=models.IntegerField(default=0),
         ),
     ]
