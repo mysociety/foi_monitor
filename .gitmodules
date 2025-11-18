@@ -1,6 +1,6 @@
 [submodule "theme"]
 	path = theme
-	url = git@github.com:mysociety/mysociety-docs-theme.git
+	url = https://github.com/mysociety/mysociety-docs-theme.git
 [submodule "research_common"]
 	path = research_common
-	url = git@github.com:mysociety/research_common
+	url = https://github.com/mysociety/research_common.git
