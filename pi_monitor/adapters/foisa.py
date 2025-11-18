@@ -1,5 +1,5 @@
 
-from .base import GenericAdapter, AdapterRegistry
+from .base import GenericAdapter, AdapterRegistry, load_file, dataframe_to_map
 import pandas as pd
 import numpy as np
 
@@ -36,8 +36,8 @@ class FoisaAdapter(GenericAdapter):
         else:
             filename = year
 
-        df = pd.DataFrame.quick.load_file(self.resources_folder,
-                                          "{year}.csv".format(year=filename))
+        df = load_file(self.resources_folder,
+                       "{year}.csv".format(year=filename))
 
         fill_na = ["EIR requests", "EIRs - full release",
                    "FOISA requests", "FOISA - full release"]
@@ -51,18 +51,18 @@ class FoisaAdapter(GenericAdapter):
 
         # get mappings between WDTK and FOISA ids
 
-        wdtk_id_lookup = pd.DataFrame.quick.load_file(self.resources_folder,
-                                                      "authorities.csv")
+        wdtk_id_lookup = load_file(self.resources_folder,
+                                   "authorities.csv")
 
         id_lookup = {}
         for r in range(1, 12):
             col = "wdtk_id_{id}".format(id=r)
             reduced = wdtk_id_lookup[~wdtk_id_lookup[col].isnull()]
-            new_ids = reduced.quick.to_map(col, "authority_id")
+            new_ids = dataframe_to_map(reduced, col, "authority_id")
             id_lookup.update(new_ids)
 
         # merge in the wdtk counts
-        wdtk_df = pd.DataFrame.quick.load_file(
+        wdtk_df = load_file(
             self.resources_folder, "wdtk_year_count.csv")
         
         # add all values up for year
