@@ -1,25 +1,22 @@
-FROM python:3.8-buster
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-      && echo 'deb https://deb.nodesource.com/node_14.x buster main' > /etc/apt/sources.list.d/nodesource.list
-
-RUN apt-get -qq update \
-      && apt-get -qq install \
-            nodejs \
-         --no-install-recommends \
-      && rm -rf /var/lib/apt/lists/*
-
-RUN npm install -g sass
-
-RUN mkdir /app
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-RUN bin/populate_if_missing.bash
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+FROM python:3.11-bookworm
+ENV INSIDE_DOCKER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    POETRY_VERSION=1.8.0 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    PYSETUP_PATH="/opt/pysetup"
+RUN apt-get update && apt-get install -y \
+    binutils libgdal-dev gdal-bin libproj-dev git npm \
+    && rm -rf /var/lib/apt/lists/*
+RUN curl -sSL https://install.python-poetry.org | python -
+RUN mkdir -p /usr/local/share/fonts/truetype/merriweather \
+    && curl -L https://github.com/google/fonts/raw/refs/heads/main/ofl/merriweather/Merriweather%5Bopsz,wdth,wght%5D.ttf \
+    -o /usr/local/share/fonts/truetype/merriweather/Merriweather.ttf \
+    && fc-cache -f -v
+ENV PATH="/root/.local/bin:$PATH"
+WORKDIR $PYSETUP_PATH
+#COPY poetry.loc[k] pyproject.toml ./
+#RUN poetry install --no-root
