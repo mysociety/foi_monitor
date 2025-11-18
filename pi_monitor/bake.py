@@ -5,6 +5,7 @@ from django.conf import settings
 
 from django_sourdough.views import BaseBakeManager
 
+
 class BakeManager(BaseBakeManager):
     """
     add support for copying media files
@@ -22,6 +23,6 @@ class BakeManager(BaseBakeManager):
         settings.IS_LIVE = True
         settings.EXPORT_CHARTS = True
 
-    #def bake_app(self):
+    # def bake_app(self):
     #    self.app_urls.bake(only_absent=True) #
     #    #self.copy_media_files()

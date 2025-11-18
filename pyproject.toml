@@ -40,3 +40,34 @@ ruff = "^0.14.5"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    # flake8
+    "F",
+    # isort
+    "I",
+]
+ignore = [
+    # line too long, sorted with formatter where it can be
+    "E501",
+]
+
+
+[tool.ruff.lint.isort]
+known-first-party = ["hub"]
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.isort.sections]
+django = ["django"]

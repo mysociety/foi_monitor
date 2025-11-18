@@ -6,104 +6,232 @@ import django_sourdough.models.mixins
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Authority',
+            name="Authority",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('batch_time', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('batch_id', models.IntegerField(blank=True, editable=False, null=True)),
-                ('name', models.CharField(max_length=255)),
-                ('slug', models.CharField(max_length=255)),
-                ('is_sector', models.BooleanField(default=False)),
-                ('is_overall', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "batch_time",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "batch_id",
+                    models.IntegerField(blank=True, editable=False, null=True),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("slug", models.CharField(max_length=255)),
+                ("is_sector", models.BooleanField(default=False)),
+                ("is_overall", models.BooleanField(default=False)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
             bases=(models.Model, django_sourdough.models.mixins.StockModelHelpers),
         ),
         migrations.CreateModel(
-            name='Jurisdiction',
+            name="Jurisdiction",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('batch_time', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('batch_id', models.IntegerField(blank=True, editable=False, null=True)),
-                ('name', models.CharField(max_length=255)),
-                ('slug', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "batch_time",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "batch_id",
+                    models.IntegerField(blank=True, editable=False, null=True),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("slug", models.CharField(max_length=255)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
             bases=(models.Model, django_sourdough.models.mixins.StockModelHelpers),
         ),
         migrations.CreateModel(
-            name='Property',
+            name="Property",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('batch_time', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('batch_id', models.IntegerField(blank=True, editable=False, null=True)),
-                ('name', models.CharField(blank=True, max_length=255, null=True)),
-                ('slug', models.CharField(blank=True, default='', max_length=255, null=True)),
-                ('description', models.CharField(blank=True, max_length=255, null=True)),
-                ('dynamic', models.CharField(blank=True, max_length=255, null=True)),
-                ('priority', models.IntegerField(default=0)),
-                ('child_of', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='pi_monitor.Property')),
-                ('jurisdiction', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='properties', to='pi_monitor.Jurisdiction')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "batch_time",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "batch_id",
+                    models.IntegerField(blank=True, editable=False, null=True),
+                ),
+                ("name", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "slug",
+                    models.CharField(blank=True, default="", max_length=255, null=True),
+                ),
+                (
+                    "description",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                ("dynamic", models.CharField(blank=True, max_length=255, null=True)),
+                ("priority", models.IntegerField(default=0)),
+                (
+                    "child_of",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="children",
+                        to="pi_monitor.Property",
+                    ),
+                ),
+                (
+                    "jurisdiction",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="properties",
+                        to="pi_monitor.Jurisdiction",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
             bases=(models.Model, django_sourdough.models.mixins.StockModelHelpers),
         ),
         migrations.CreateModel(
-            name='Year',
+            name="Year",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('batch_time', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('batch_id', models.IntegerField(blank=True, editable=False, null=True)),
-                ('number', models.IntegerField(default=0)),
-                ('display', models.CharField(max_length=20)),
-                ('slug', models.CharField(default='', max_length=20)),
-                ('file_name', models.CharField(max_length=20)),
-                ('jurisdiction', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='years', to='pi_monitor.Jurisdiction')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "batch_time",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "batch_id",
+                    models.IntegerField(blank=True, editable=False, null=True),
+                ),
+                ("number", models.IntegerField(default=0)),
+                ("display", models.CharField(max_length=20)),
+                ("slug", models.CharField(default="", max_length=20)),
+                ("file_name", models.CharField(max_length=20)),
+                (
+                    "jurisdiction",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="years",
+                        to="pi_monitor.Jurisdiction",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
             bases=(models.Model, django_sourdough.models.mixins.StockModelHelpers),
         ),
         migrations.CreateModel(
-            name='Value',
+            name="Value",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('batch_time', models.DateTimeField(blank=True, editable=False, null=True)),
-                ('batch_id', models.IntegerField(blank=True, editable=False, null=True)),
-                ('value', models.FloatField(default=0)),
-                ('percentage_value', models.FloatField(default=0)),
-                ('authority', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='values', to='pi_monitor.Authority')),
-                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='values', to='pi_monitor.Property')),
-                ('year', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='values', to='pi_monitor.Year')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "batch_time",
+                    models.DateTimeField(blank=True, editable=False, null=True),
+                ),
+                (
+                    "batch_id",
+                    models.IntegerField(blank=True, editable=False, null=True),
+                ),
+                ("value", models.FloatField(default=0)),
+                ("percentage_value", models.FloatField(default=0)),
+                (
+                    "authority",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="values",
+                        to="pi_monitor.Authority",
+                    ),
+                ),
+                (
+                    "property",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="values",
+                        to="pi_monitor.Property",
+                    ),
+                ),
+                (
+                    "year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="values",
+                        to="pi_monitor.Year",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
             bases=(models.Model, django_sourdough.models.mixins.StockModelHelpers),
         ),
         migrations.AddField(
-            model_name='authority',
-            name='jurisdiction',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='authorities', to='pi_monitor.Jurisdiction'),
+            model_name="authority",
+            name="jurisdiction",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="authorities",
+                to="pi_monitor.Jurisdiction",
+            ),
         ),
         migrations.AddField(
-            model_name='authority',
-            name='sector',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='pi_monitor.Authority'),
+            model_name="authority",
+            name="sector",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="children",
+                to="pi_monitor.Authority",
+            ),
         ),
     ]

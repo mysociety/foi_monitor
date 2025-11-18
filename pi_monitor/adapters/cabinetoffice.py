@@ -1,4 +1,3 @@
-
 from .base import GenericAdapter, AdapterRegistry, load_file, dataframe_to_map
 import numpy as np
 import pandas as pd
@@ -22,6 +21,7 @@ class CabinetAdapter(GenericAdapter):
     """
     adapter to get Cabinet Office style input
     """
+
     start_year = 2010
     end_year = 2020
     authority_name_column = "Government body"
@@ -36,10 +36,10 @@ class CabinetAdapter(GenericAdapter):
     geo_label = "UK goverment"
 
     def get_year(self, year: int, authority_lookup: dict):
-
         df = load_file(self.resources_folder, self.filename)
         df = df.rename(
-            columns={'Total "resolvable" requests': "Total resolvable requests"})
+            columns={'Total "resolvable" requests': "Total resolvable requests"}
+        )
 
         # Drop all the 'Quarters'
         df["year"] = pd.to_numeric(df["Quarter"], errors="coerce")
@@ -61,13 +61,12 @@ class CabinetAdapter(GenericAdapter):
         sector_lookup = dataframe_to_map(authorities, "Government body", "sector")
         id_lookup = dataframe_to_map(authorities, "wdtk_id", "Government body")
 
-
         # replace alternate names with newer forms
 
         def default_self(x):
             return alt_name_lookup.get(x, x)
 
-        #convert to floats
+        # convert to floats
         for col in df.columns[2:]:
             df.loc[df[col] == "-", col] = 0
             df.loc[df[col] == " ", col] = 0
@@ -82,29 +81,40 @@ class CabinetAdapter(GenericAdapter):
         df["Sector"] = df["Government body"].map(sector_lookup)
 
         # merge in the wdtk counts
-        wdtk_df = load_file(
-            self.resources_folder, "wdtk_year_count.csv")
+        wdtk_df = load_file(self.resources_folder, "wdtk_year_count.csv")
         wdtk_df = wdtk_df.rename(columns={"count": "WhatDoTheyKnow requests"})
-        wdtk_df["Government body"] = wdtk_df["public_body_id"].apply(
-            id_lookup.get)
-        df = pd.merge(df, wdtk_df, how="left", left_on=["year", "Government body"], right_on=[
-                      "year", "Government body"])
-
+        wdtk_df["Government body"] = wdtk_df["public_body_id"].apply(id_lookup.get)
+        df = pd.merge(
+            df,
+            wdtk_df,
+            how="left",
+            left_on=["year", "Government body"],
+            right_on=["year", "Government body"],
+        )
 
         df["All requests"] = df["Total requests received"]
-        df["Public Information Requests - Granted in full"] = df["Initial Outcome Granted in full"]
+        df["Public Information Requests - Granted in full"] = df[
+            "Initial Outcome Granted in full"
+        ]
         df["Public Information Requests"] = df["Total requests received"]
 
         df["20-day deadline met"] = pd.to_numeric(
-            df["20-day deadline met"], errors="coerce")
+            df["20-day deadline met"], errors="coerce"
+        )
         df["Permitted extension to 20-day deadline"] = pd.to_numeric(
-            df["Permitted extension to 20-day deadline"], errors="coerce")
-        df["On time (including extentions)"] = df["20-day deadline met"] + \
-            df["Permitted extension to 20-day deadline"]
+            df["Permitted extension to 20-day deadline"], errors="coerce"
+        )
+        df["On time (including extentions)"] = (
+            df["20-day deadline met"] + df["Permitted extension to 20-day deadline"]
+        )
 
-        df["WhatDoTheyKnow requests (without Home Office)"] = df["WhatDoTheyKnow requests"]
-        df.loc[df["Government body"] == "Home Office",
-               ["WhatDoTheyKnow requests (without Home Office)"]] = 0
+        df["WhatDoTheyKnow requests (without Home Office)"] = df[
+            "WhatDoTheyKnow requests"
+        ]
+        df.loc[
+            df["Government body"] == "Home Office",
+            ["WhatDoTheyKnow requests (without Home Office)"],
+        ] = 0
 
         if year == 9999:
             pt = df.pivot_table(index=["Government body"], aggfunc=np.sum)
