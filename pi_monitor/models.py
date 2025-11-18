@@ -13,6 +13,8 @@ from django.urls import reverse
 from django.utils.html import conditional_escape, escape
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
+
+from .adapters.base import dataframe_to_map
 from django_sourdough.models import FlexiBulkModel
 from numpy import histogram
 
@@ -130,7 +132,7 @@ class Jurisdiction(FlexiBulkModel):
 
         self.properties.all().delete()
 
-        name_to_id = df.quick.to_map("value", "id")
+        name_to_id = dataframe_to_map(df, "value", "id")
 
         local_to_global = {}
         children_ids = []
