@@ -18,5 +18,5 @@ RUN mkdir -p /usr/local/share/fonts/truetype/merriweather \
     && fc-cache -f -v
 ENV PATH="/root/.local/bin:$PATH"
 WORKDIR $PYSETUP_PATH
-#COPY poetry.loc[k] pyproject.toml ./
-#RUN poetry install --no-root
+COPY poetry.loc[k] pyproject.toml ./
+RUN poetry install --no-root
