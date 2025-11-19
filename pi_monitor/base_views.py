@@ -2,9 +2,9 @@
 Base view classes that provide the functionality previously from django-sourdough
 but using standard Django class-based views.
 """
-from django.views.generic import TemplateView
-from django.template import Template, Context
 from django.conf import settings
+from django.template import Context, Template
+from django.views.generic import TemplateView
 
 
 class GenericDecorator:
@@ -185,7 +185,8 @@ class SocialViewMixin:
         
         c_context = Context(context)
         
-        process = lambda x: Template(x).render(c_context)
+        def process(x):
+            return Template(x).render(c_context)
             
         if cls.twitter_share_image:
             twitter_img = cls.twitter_share_image

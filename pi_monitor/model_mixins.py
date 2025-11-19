@@ -61,10 +61,10 @@ class EasyBulkModel(models.Model):
             q.batch_id = x
             q.batch_time = n
         
-        def chunks(l, n):
-            """Yield successive n-sized chunks from l."""
-            for i in range(0, len(l), n):
-                yield l[i:i+n]
+        def chunks(items, chunk_size):
+            """Yield successive n-sized chunks from items."""
+            for i in range(0, len(items), chunk_size):
+                yield items[i:i+chunk_size]
         
         for c in chunks(real_queue, safe_creation_rate):
             print("saving {0} of {1}".format(len(c), cls))

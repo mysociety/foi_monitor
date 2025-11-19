@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 
-import altair as alt
-import numpy as np
-import pandas as pd
-from research_common.charts import (
-    AltairChart,
-    Table,
-    query_to_df,
-    group_to_other,
-    theme,
-)
-from research_common.views import AnchorChartsMixIn
 from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import conditional_escape
+
+import altair as alt
+import numpy as np
+import pandas as pd
+
+from research_common.charts import (
+    AltairChart,
+    Table,
+    group_to_other,
+    query_to_df,
+    theme,
+)
+from research_common.views import AnchorChartsMixIn
 
 from .base_views import StandardLogicalView
 from .models import (
