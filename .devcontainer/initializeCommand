@@ -1,0 +1,2 @@
+#!/bin/sh
+[ ! -d "src/research_common/views" ] && git submodule update --init || echo "Already exists"
