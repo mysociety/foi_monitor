@@ -15,8 +15,8 @@ from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import conditional_escape
-from django_sourdough.views import LogicalSocialView
 
+from .base_views import StandardLogicalView
 from .models import (
     Authority,
     Jurisdiction,
@@ -36,7 +36,7 @@ class GenericSocial(object):
     share_twitter = "@mysociety"
 
 
-class LocalView(AnchorChartsMixIn, GenericSocial, LogicalSocialView):
+class LocalView(AnchorChartsMixIn, GenericSocial, StandardLogicalView):
     chart_storage_slug = "foi-monitor"
 
     def extra_params(self, context):
@@ -52,9 +52,7 @@ class LocalView(AnchorChartsMixIn, GenericSocial, LogicalSocialView):
 
 
 class OverviewView(LocalView):
-    template = "pi_monitor/overview.html"
-    url_patterns = [r"^"]
-    url_name = "pi.overview"
+    template_name = "pi_monitor/overview.html"
     share_title = "Public Information Statistics"
     page_title = "Public Information Statistics"
     share_description = "Explore FOI information for different jurisdictions"
@@ -64,15 +62,12 @@ class OverviewView(LocalView):
 
 
 class HomeView(LocalView):
-    template = "pi_monitor/home.html"
-    url_patterns = [r"^(.*)/"]
-    url_name = "pi.home"
+    template_name = "pi_monitor/home.html"
     share_title = "{{jurisdiction.name}} Statistics"
     page_title = "{{jurisdiction.name}} Statistics"
     share_description = (
         "Explore public information statistics for {{jurisdiction.name}}"
     )
-    args = ["jurisdiction_slug"]
 
     def bake_args(self):
         for j in Jurisdiction.objects.all():
@@ -263,13 +258,10 @@ def zero_if_not(v):
 
 
 class PropertyView(LocalView):
-    template = "pi_monitor/property.html"
-    url_patterns = [r"^(.*)/property/(.*)/(.*)/"]
-    url_name = "pi.property"
+    template_name = "pi_monitor/property.html"
     share_title = "{{property.name}} Statistics"
     page_title = "{{property.name}} Statistics"
     share_description = "{{jurisdiction.name}} - Statistics for {{jurisdiction.name}}"
-    args = ["jurisdiction_slug", "property_slug", "year_slug"]
 
     def bake_args(self):
         for j in Jurisdiction.objects.all():
@@ -464,13 +456,10 @@ class PropertyView(LocalView):
 
 
 class YearView(LocalView):
-    template = "pi_monitor/year.html"
-    url_patterns = [r"^(.*)/years/(.*)/"]
-    url_name = "pi.year"
+    template_name = "pi_monitor/year.html"
     share_title = "{{jurisdiction.name}} Statistics - {{year.number}}"
     page_title = "{{jurisdiction.name}} Statistics - {{year.number}}"
     share_description = "Information request statistics"
-    args = ["jurisdiction_slug", "year_slug"]
 
     def bake_args(self):
         for j in Jurisdiction.objects.all():
@@ -647,10 +636,7 @@ class BodyStatisticView(LocalView):
     body on a specific statistic
     """
 
-    template = "pi_monitor/bodystat.html"
-    url_patterns = [r"^(.*)/body/(.*)/property/(.*)/"]
-    url_name = "pi.bodystat"
-    args = ["jurisdiction_slug", "body_slug", "property_slug", ("bake_variables", {})]
+    template_name = "pi_monitor/bodystat.html"
     share_title = "{{authority.name}} -- {{property.name}}"
     page_title = "{{authority.name}} -- {{property.name}}"
     share_description = "{{jurisdiction.name}} - Information request statistics"
@@ -706,6 +692,9 @@ class BodyStatisticView(LocalView):
         return main_df
 
     def logic(self):
+        # Get bake_variables from kwargs if provided
+        self.bake_variables = getattr(self, 'bake_variables', {})
+        
         if not self.bake_variables:
             self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
             self.authority = Authority.objects.get(
@@ -866,10 +855,7 @@ class BodyStatisticView(LocalView):
 
 
 class BodyView(LocalView):
-    template = "pi_monitor/body.html"
-    url_patterns = [r"^(.*)/body/(.*)/(.*)/"]
-    url_name = "pi.body"
-    args = ["jurisdiction_slug", "body_slug", "year_slug"]
+    template_name = "pi_monitor/body.html"
     share_title = "Statistics - {{authority.name}}"
     page_title = "Statistics - {{authority.name}}"
     share_description = "{{jurisdiction.name}} - Information request statistics"
