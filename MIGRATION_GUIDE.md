@@ -26,10 +26,10 @@ urlpatterns = [
 
 #### `pi_monitor/base_views.py`
 Local implementations of view functionality:
-- `LogicalViewMixin` - Provides prelogic/logic/postlogic pattern
+- `LogicalViewMixin` - Legacy compatibility for prelogic/logic/postlogic pattern
 - `SocialViewMixin` - Handles social media metadata
 - `StandardLogicalView` - Combined view extending Django's TemplateView
-- `prelogic` and `postlogic` decorators
+- `prelogic` and `postlogic` decorators (for backward compatibility)
 
 #### `pi_monitor/model_mixins.py`
 Local implementations of model mixins:
@@ -45,7 +45,7 @@ Provides compatibility layer for:
 ### 4. Modified Files
 
 #### `pi_monitor/views.py`
-**Before:**
+**Before (non-standard pattern):**
 ```python
 class HomeView(LocalView):
     template = "pi_monitor/home.html"
@@ -102,8 +102,33 @@ urlpatterns = [
 ]
 ```
 
-### View Structure
-Views inherit from `StandardLogicalView` which extends Django's `TemplateView`:
+### View Structure - Two Patterns Available
+
+#### Recommended: Standard Django Pattern
+
+For new code, use standard Django's `get_context_data()`:
+
+```python
+class OverviewView(LocalView):
+    template_name = "pi_monitor/overview.html"
+    
+    def get_context_data(self, **kwargs):
+        """Standard Django pattern - explicitly return context dict."""
+        context = super().get_context_data(**kwargs)
+        context['jurisdictions'] = Jurisdiction.objects.all().order_by("name")
+        context['total_count'] = context['jurisdictions'].count()
+        return context
+```
+
+**Benefits:**
+- Standard Django pattern familiar to all Django developers
+- Explicit about what goes into the template context
+- Better IDE support and autocomplete
+- Clear data flow
+
+#### Legacy: Logic Pattern (For Compatibility)
+
+Existing views using the `logic()` method continue to work:
 
 ```python
 class HomeView(LocalView):
@@ -112,15 +137,44 @@ class HomeView(LocalView):
     def logic(self):
         # Access URL parameters as self.jurisdiction_slug (from kwargs)
         self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
-        # Set attributes that become template context
+        # Attributes set on self are automatically added to context
         self.desc = self.jurisdiction.adapter().get_description()
 ```
 
-### Key Differences
+**Note:** This pattern is maintained for backward compatibility but is non-standard. New views should use `get_context_data()` instead.
+
+### Key Differences from django-sourdough
 1. **URL Parameters:** Now come from URL kwargs, not from `args` attribute
 2. **Template:** Use `template_name` instead of `template`
 3. **URL Patterns:** Defined in `urls.py` not in view classes
 4. **Base Class:** Inherit from `StandardLogicalView` instead of `LogicalSocialView`
+5. **View Logic:** Prefer `get_context_data()` over `logic()` method
+
+### Migration Path for Existing Views
+
+To migrate a view from legacy to standard pattern:
+
+**Before:**
+```python
+class MyView(LocalView):
+    template_name = "my_template.html"
+    
+    def logic(self):
+        self.items = Item.objects.all()
+        self.count = self.items.count()
+```
+
+**After:**
+```python
+class MyView(LocalView):
+    template_name = "my_template.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['items'] = Item.objects.all()
+        context['count'] = context['items'].count()
+        return context
+```
 
 ## Testing Instructions
 
