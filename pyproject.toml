@@ -8,7 +8,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 # Git dependencies
-django-sourdough = {git = "https://github.com/ajparsons/django-sourdough", rev = "737c3bf0917c19f97a06b5b19b8c00265eebd6ce"}
 everypolitician-popolo = {git = "https://github.com/ajparsons/everypolitician-popolo-python.git", rev = "export_merge_function"}
 useful-decorator = {git = "https://github.com/ajparsons/useful-decorator", rev = "6945b7017be19ebc2f5e243254bc65356e219d2f"}
 django-pipeline-csscompressor = {git = "https://github.com/mysociety/django-pipeline-csscompressor"}
@@ -20,16 +19,16 @@ django-bootstrap-form = "*"
 django-debug-toolbar = "*"
 django-htmlmin = "*"
 django-import-export = "*"
-django-pipeline = "2.0.5"
-django = "3.1.6"
+django-pipeline = "^3.0"
+django = "^4.2"
 fabric = "*"
-markdown = "2.6.2"
+markdown = "^3.0"
 numpy = "*"
 openpyxl = "*"
 pillow = "*"
 pylint-django = "*"
 python-levenshtein = "*"
-six = "1.15.0"
+six = "^1.16"
 unicodecsv = "*"
 xlrd = "*"
 xlwt = "*"
