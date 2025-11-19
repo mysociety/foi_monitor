@@ -54,13 +54,22 @@ class LocalView(AnchorChartsMixIn, GenericSocial, StandardLogicalView):
 
 
 class OverviewView(LocalView):
+    """
+    Overview page showing all jurisdictions.
+    
+    This view demonstrates the standard Django pattern - overriding get_context_data()
+    instead of using the legacy logic() method.
+    """
     template_name = "pi_monitor/overview.html"
     share_title = "Public Information Statistics"
     page_title = "Public Information Statistics"
     share_description = "Explore FOI information for different jurisdictions"
 
-    def logic(self):
-        self.jurisdictions = Jurisdiction.objects.all().order_by("name")
+    def get_context_data(self, **kwargs):
+        """Add jurisdictions to the template context."""
+        context = super().get_context_data(**kwargs)
+        context['jurisdictions'] = Jurisdiction.objects.all().order_by("name")
+        return context
 
 
 class HomeView(LocalView):
