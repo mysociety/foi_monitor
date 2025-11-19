@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "bootstrapform",
     "import_export",
-    "django_sourdough",
     "pipeline",
     "research_common.apps.ResearchCommonConfig",
     "debug_toolbar",

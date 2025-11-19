@@ -12,7 +12,7 @@ from django.utils.html import conditional_escape, escape
 from django.utils.text import slugify
 
 from .adapters.base import dataframe_to_map
-from django_sourdough.models import FlexiBulkModel
+from .model_mixins import FlexiBulkModel
 
 from .adapters import AdapterRegistry
 
