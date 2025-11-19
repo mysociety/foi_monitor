@@ -1,9 +1,8 @@
 import debug_toolbar
 
-from django.conf.urls import include, url
+from django.conf.urls import include
 from django.urls import path
 from django.http.response import HttpResponse
-from django_sourdough.views import include_view
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -21,8 +20,8 @@ def holder_frontpage(request):
 urlpatterns += [
     path("", holder_frontpage),
     path("__debug__/", include(debug_toolbar.urls)),
-    url(
-        r"^sites/{0}/".format(settings.SITE_SLUG),
-        include_view("{0}.views".format(settings.CORE_APP_NAME)),
+    path(
+        f"sites/{settings.SITE_SLUG}/",
+        include(f"{settings.CORE_APP_NAME}.urls"),
     ),
 ]
