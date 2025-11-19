@@ -36,4 +36,3 @@ static/sass
 *.sqlite3
 .env
 bake_dir/
-.devcontainer/devcontainer.json
