@@ -7,6 +7,67 @@ from django.template import Template, Context
 from django.conf import settings
 
 
+class GenericDecorator:
+    """
+    Base class for creating decorators with arguments.
+    Used for prelogic and postlogic decorators.
+    """
+    prefix = ""
+    args_map = []
+    default_kwargs = {}
+
+    def __init__(self, *args, **kwargs):
+        # Map args to kwargs based on args_map
+        for i, arg in enumerate(args):
+            if i < len(self.args_map):
+                kwargs[self.args_map[i]] = arg
+        
+        # Apply default kwargs
+        for k, v in self.default_kwargs.items():
+            if k not in kwargs:
+                kwargs[k] = v
+        
+        # Store kwargs as attributes
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def __call__(self, func):
+        return self.modify_function(func)
+
+    def modify_function(self, obj):
+        return obj
+
+
+class prelogic(GenericDecorator):
+    """
+    Decorates a function to run before the logic view.
+    Accepts an order kwarg to manage competing functions.
+    """
+    prefix = "prelogic"
+    args_map = ["order"]
+    default_kwargs = {"order": 5}
+
+    def modify_function(self, obj):
+        obj._prefix = self.__class__.prefix
+        obj.order = self.order
+        return obj
+
+
+class postlogic(GenericDecorator):
+    """
+    Decorates a function to run after the logic view.
+    Accepts an order kwarg to manage competing functions.
+    """
+    prefix = "postlogic"
+    args_map = ["order"]
+    default_kwargs = {"order": 5}
+
+    def modify_function(self, obj):
+        obj._prefix = self.__class__.prefix
+        obj.order = self.order
+        return obj
+
+
 class LogicalViewMixin:
     """
     Provides logic-based view processing similar to django-sourdough's LogicalView.

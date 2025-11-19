@@ -1,7 +1,6 @@
 import debug_toolbar
 
-from django.conf.urls import include
-from django.urls import path
+from django.urls import include, path
 from django.http.response import HttpResponse
 from django.conf.urls.static import static
 from django.conf import settings
