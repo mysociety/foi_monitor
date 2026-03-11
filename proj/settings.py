@@ -1,6 +1,7 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-from conf.config import *  # stores database and key outside repo
 import os
+
+from conf.config import *  # stores database and key outside repo
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
@@ -11,12 +12,20 @@ if DEBUG:
     DEBUG = True
     IS_LIVE = False
     SITE_ROOT = "http://127.0.0.1:8000"
-    STATICFILES_STORAGE = "pipeline.storage.NonPackagingPipelineStorage"
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "pipeline.storage.NonPackagingPipelineStorage",
+        },
+    }
 else:
     SITE_ROOT = "https://research.mysociety.org/sites"
     DEBUG = False
     IS_LIVE = True
-    STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "pipeline.storage.PipelineStorage",
+        },
+    }
 
 
 ALLOWED_HOSTS = ["127.0.0.1", "testserver"]
@@ -117,9 +126,9 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = False
-
 USE_TZ = True
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

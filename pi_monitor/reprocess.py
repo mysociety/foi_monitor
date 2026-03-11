@@ -2,9 +2,10 @@
 reformat wdtk data to match scottish ids
 """
 
-import pandas as pd
-from collections import Counter
 import os
+from collections import Counter
+
+import pandas as pd
 
 resources_folder = r"C:\Users\alexj\Dropbox\mysociety\research_sites\resources\foisa"
 

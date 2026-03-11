@@ -2,19 +2,20 @@ import importlib
 import os
 from itertools import groupby
 
-import numpy as np
-import pandas as pd
-from research_common.charts import Table, query_to_df
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.html import conditional_escape, escape
 from django.utils.text import slugify
 
-from .adapters.base import dataframe_to_map
-from .model_mixins import FlexiBulkModel
+import numpy as np
+import pandas as pd
+
+from research_common.charts import Table, query_to_df
 
 from .adapters import AdapterRegistry
+from .adapters.base import dataframe_to_map
+from .model_mixins import FlexiBulkModel
 
 for a in settings.PI_ADAPTERS:
     importlib.import_module(a)
@@ -387,7 +388,7 @@ class Authority(FlexiBulkModel):
         def get_property_link(property_slug):
             prop = slug_to_prop[property_slug]
             url = reverse(
-                "pi.property", args=(prop.jurisdiction.slug, prop.slug, year.slug)
+                "pi:property", args=(prop.jurisdiction.slug, prop.slug, year.slug)
             )
             return get_link(escape(prop.name), url)
 
@@ -399,7 +400,7 @@ class Authority(FlexiBulkModel):
                 return value
             prop = slug_to_prop[property_slug]
             url = reverse(
-                "pi.bodystat", args=(prop.jurisdiction.slug, self.slug, prop.slug)
+                "pi:bodystat", args=(prop.jurisdiction.slug, self.slug, prop.slug)
             )
             return get_link(value, url)
 

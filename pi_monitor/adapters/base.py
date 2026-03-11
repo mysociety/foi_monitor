@@ -1,7 +1,8 @@
 import os
+from collections import defaultdict
+
 import markdown
 import pandas as pd
-from collections import defaultdict
 
 
 def load_file(*args, **kwargs):

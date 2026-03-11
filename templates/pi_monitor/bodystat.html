@@ -16,8 +16,8 @@
 <hr>
 <p>See more statistics for:</p>
 <ul>
-<li><a href="{% url 'pi.body' jurisdiction.slug  authority.slug 'alltime' %}">{{authority.name}}</a></li>
-<li><a href="{% url 'pi.property' jurisdiction.slug  property.slug 'alltime' %}">{{property.name}}</a></lu>
+<li><a href="{% url 'pi:body' jurisdiction.slug  authority.slug 'alltime' %}">{{authority.name}}</a></li>
+<li><a href="{% url 'pi:property' jurisdiction.slug  property.slug 'alltime' %}">{{property.name}}</a></lu>
 </ul>
 
 {% if property.description %}

@@ -6,7 +6,11 @@ DEBUG = False
 HTML_MINIFY = not DEBUG
 SITE_ROOT = "https://research.mysociety.org/sites"
 IS_LIVE = True
-STATICFILES_STORAGE = "pipeline.storage.PipelineStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "pipeline.storage.PipelineStorage",
+    },
+}
 
 DISABLE_APPS = ["django.contrib.admin", "debug_toolbar"]
 

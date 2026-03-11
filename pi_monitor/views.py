@@ -56,10 +56,11 @@ class LocalView(AnchorChartsMixIn, GenericSocial, StandardLogicalView):
 class OverviewView(LocalView):
     """
     Overview page showing all jurisdictions.
-    
+
     This view demonstrates the standard Django pattern - overriding get_context_data()
     instead of using the legacy logic() method.
     """
+
     template_name = "pi_monitor/overview.html"
     share_title = "Public Information Statistics"
     page_title = "Public Information Statistics"
@@ -68,7 +69,7 @@ class OverviewView(LocalView):
     def get_context_data(self, **kwargs):
         """Add jurisdictions to the template context."""
         context = super().get_context_data(**kwargs)
-        context['jurisdictions'] = Jurisdiction.objects.all().order_by("name")
+        context["jurisdictions"] = Jurisdiction.objects.all().order_by("name")
         return context
 
 
@@ -333,7 +334,7 @@ class PropertyView(LocalView):
 
         def authority_link(authority):
             authority_url = reverse(
-                "pi.body",
+                "pi:body",
                 args=(self.year.jurisdiction.slug, authority.slug, self.year.slug),
             )
             return get_link(authority.name, authority_url)
@@ -345,7 +346,7 @@ class PropertyView(LocalView):
                 return value
             else:
                 url = reverse(
-                    "pi.bodystat",
+                    "pi:bodystat",
                     args=(self.jurisdiction.slug, body_slug, self.property.slug),
                 )
                 return get_link(value, url)
@@ -529,7 +530,7 @@ class YearView(LocalView):
             """
             j_slug = self.year.jurisdiction.slug
             year_slug = self.year.slug
-            authority_url = reverse("pi.body", args=(j_slug, authority.slug, year_slug))
+            authority_url = reverse("pi:body", args=(j_slug, authority.slug, year_slug))
             return get_link(authority.name, authority_url)
 
         valid_auths = self.jurisdiction.authorities.all()
@@ -704,8 +705,8 @@ class BodyStatisticView(LocalView):
 
     def logic(self):
         # Get bake_variables from kwargs if provided
-        self.bake_variables = getattr(self, 'bake_variables', {})
-        
+        self.bake_variables = getattr(self, "bake_variables", {})
+
         if not self.bake_variables:
             self.jurisdiction = Jurisdiction.objects.get(slug=self.jurisdiction_slug)
             self.authority = Authority.objects.get(
@@ -765,7 +766,7 @@ class BodyStatisticView(LocalView):
 
         def format_year(year):
             url = reverse(
-                "pi.body",
+                "pi:body",
                 args=(self.jurisdiction.slug, self.authority.slug, str(int(year))),
             )
             return get_link(int(year), url)

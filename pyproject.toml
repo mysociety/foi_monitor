@@ -35,6 +35,8 @@ xlwt = "*"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.5"
+pytest = "*"
+pytest-django = "*"
 
 [build-system]
 requires = ["poetry-core"]
@@ -70,3 +72,7 @@ section-order = [
 
 [tool.ruff.lint.isort.sections]
 django = ["django"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "proj.test_settings"
+pythonpath = ["."]

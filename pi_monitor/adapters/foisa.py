@@ -1,6 +1,7 @@
-from .base import GenericAdapter, AdapterRegistry, load_file, dataframe_to_map
-import pandas as pd
 import numpy as np
+import pandas as pd
+
+from .base import AdapterRegistry, GenericAdapter, dataframe_to_map, load_file
 
 
 def zero_if_none(v):

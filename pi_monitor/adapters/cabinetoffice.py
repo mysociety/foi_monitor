@@ -1,6 +1,7 @@
-from .base import GenericAdapter, AdapterRegistry, load_file, dataframe_to_map
 import numpy as np
 import pandas as pd
+
+from .base import AdapterRegistry, GenericAdapter, dataframe_to_map, load_file
 
 
 def zero_if_none(v):
@@ -68,8 +69,7 @@ class CabinetAdapter(GenericAdapter):
 
         # convert to floats
         for col in df.columns[2:]:
-            df.loc[df[col] == "-", col] = 0
-            df.loc[df[col] == " ", col] = 0
+            df[col] = df[col].replace({"-": 0, " ": 0, "": 0})
             df[col] = pd.to_numeric(df[col])
 
         df["Government body"] = df["Government body"].apply(default_self)

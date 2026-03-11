@@ -20,7 +20,7 @@
 <hr>
 <ul class="nav nav-tabs">
     {% for y in years %}
-    <li role="presentation" {% if year == y %}class="active"{% endif %}><a href="{% url 'pi.property' jurisdiction.slug property.slug  y.slug %}">{{y.display}}</a></li>
+    <li role="presentation" {% if year == y %}class="active"{% endif %}><a href="{% url 'pi:property' jurisdiction.slug property.slug  y.slug %}">{{y.display}}</a></li>
     {% endfor %}
 </ul>
 	<a name="change_over_time"></a>

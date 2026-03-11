@@ -17,7 +17,7 @@
 		<ul>
 		{% for j in jurisdictions %}
 		<li>
-		<a href="{% url 'pi.home' j.slug %}">{{j.name}}</a>  - {{j.desc}}
+		<a href="{% url 'pi:home' j.slug %}">{{j.name}}</a>  - {{j.desc}}
 		</li>
 		{% endfor %}
 		</ul>

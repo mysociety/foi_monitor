@@ -11,9 +11,9 @@
 
 {{desc|safe}}
 
-        <p>Statistics are available for: {% for y in years %}{% if forloop.first == False %}{% if forloop.last %} and {% else %}, {%endif%}{%endif%}<a href="{% url 'pi.year' jurisdiction.slug y.slug %}" >{{y.display.lower}}</a>{% endfor %}.
+        <p>Statistics are available for: {% for y in years %}{% if forloop.first == False %}{% if forloop.last %} and {% else %}, {%endif%}{%endif%}<a href="{% url 'pi:year' jurisdiction.slug y.slug %}" >{{y.display.lower}}</a>{% endfor %}.
      
-		<p>You can also see statistics for <a href="{% url 'pi.body' jurisdiction.slug 'all-authorities' 'alltime' %}">requests made to all authorities</a>.</p>
+		<p>You can also see statistics for <a href="{% url 'pi:body' jurisdiction.slug 'all-authorities' 'alltime' %}">requests made to all authorities</a>.</p>
 	
 		{{all_time_chart}}
 
@@ -24,7 +24,7 @@
 		<h2>Statistics by sectors</h2>
 		<ul>
 		{% for s in jurisdiction.sectors %}
-		<li><a href="{% url 'pi.body' jurisdiction.slug s.slug 'alltime' %}">{{s.name}}</a></li>
+		<li><a href="{% url 'pi:body' jurisdiction.slug s.slug 'alltime' %}">{{s.name}}</a></li>
 		{% endfor %}
 		</ul>
 		
@@ -34,7 +34,7 @@
 		<h3>{{bl.grouper.name}}</h3>
 		<ul>
 		{% for s in bl.list %}
-		<li><a href="{% url 'pi.body' jurisdiction.slug s.slug 'alltime' %}">{{s.name}}</a></li>
+		<li><a href="{% url 'pi:body' jurisdiction.slug s.slug 'alltime' %}">{{s.name}}</a></li>
 		{% endfor %}
 		</ul>
 		{% endfor %}
