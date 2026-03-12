@@ -37,3 +37,4 @@ static/sass
 .env
 bake_dir/
 static/admin
+static/debug_toolbar
