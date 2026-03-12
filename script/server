@@ -6,8 +6,6 @@ cd "$(dirname "$0")/.."
 
 export $(grep -v '^#' .env | xargs)
 
-PORT=${PORT:-8000}
 
 script/build
-
-docker run --env-file .env --rm -p ${PORT}:8000 mysocietyorg/$DOCKER_IMAGE_NAME:latest
+poetry run python manage.py runserver 0.0.0.0:8000

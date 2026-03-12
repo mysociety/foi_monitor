@@ -28,7 +28,7 @@ else:
     }
 
 
-ALLOWED_HOSTS = ["127.0.0.1", "testserver"]
+ALLOWED_HOSTS = ["127.0.0.1", "testserver", "localhost"]
 
 LANGUAGE_CODE = "en-uk"
 

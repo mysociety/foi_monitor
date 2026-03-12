@@ -24,11 +24,11 @@ class CabinetAdapter(GenericAdapter):
     """
 
     start_year = 2010
-    end_year = 2020
+    end_year = 2024
     authority_name_column = "Government body"
     name = "Cabinet Office FOI"
     desc = "UK central government figures (collected and released by Cabinet Office)"
-    filename = "foi-statistics-2020-published-data.csv"
+    filename = "foi-statistics-annual-2024-published-data.csv"
     slug = "cabinetfoi"
     public_types = ["FOI"]
     private_types = []
@@ -39,7 +39,10 @@ class CabinetAdapter(GenericAdapter):
     def get_year(self, year: int, authority_lookup: dict):
         df = load_file(self.resources_folder, self.filename)
         df = df.rename(
-            columns={'Total "resolvable" requests': "Total resolvable requests"}
+            columns={
+                'Total "resolvable" requests': "Total resolvable requests",
+                "S(37) - Communications with His Majesty, etc and honours": "S(37) - Communications with Her Majesty, etc and honours",
+            }
         )
 
         # Drop all the 'Quarters'
