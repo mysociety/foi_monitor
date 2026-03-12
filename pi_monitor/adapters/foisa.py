@@ -234,6 +234,10 @@ class FoisaAdapter(GenericAdapter):
                 ydf = self._read_sheet(y)
                 frames.append(ydf)
             df = pd.concat(frames, ignore_index=True)
+            # Sum numeric columns per authority so each authority has one row
+            df = df.drop(columns=["Region", "Sector"], errors="ignore")
+            df = df.pivot_table(index=["AuthorityName"], aggfunc=np.sum)
+            df = df.reset_index()
         else:
             df = self._read_sheet(year)
 
