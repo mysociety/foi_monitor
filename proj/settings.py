@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "bootstrapform",
     "import_export",
     "pipeline",
+    "django_distill",
     "research_common.apps.ResearchCommonConfig",
     "debug_toolbar",
     CORE_APP_NAME,  # noqa: F405

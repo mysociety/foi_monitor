@@ -9,8 +9,4 @@ export $(grep -v '^#' .env | xargs)
 
 script/build
 
-echo "==> Creating detached docker process..."
-docker run --env-file .env --rm -d --name $DOCKER_IMAGE_NAME -v ${PWD}/bake_dir:/bake_dir mysocietyorg/$DOCKER_IMAGE_NAME:latest python manage.py bake $@
-
-echo "==> Creating connecting to log process (can safely exit)..."
-script/logs --follow
+poetry run python manage.py distill-local --force --collectstatic --settings=proj.bake_settings $@

@@ -30,6 +30,7 @@ python-levenshtein = "*"
 unicodecsv = "*"
 xlrd = "*"
 xlwt = "*"
+django-distill = "^3.2.7"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.5"
