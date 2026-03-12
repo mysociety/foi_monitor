@@ -17,7 +17,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "proj.settings")
 django.setup()
 
 
-from pi_monitor.populate import populate
+from pi_monitor.populate import populate  # noqa: E402
 
 if __name__ == "__main__":
     populate()

@@ -1,4 +1,4 @@
-from .settings import *
+from .settings import *  # noqa: F403
 
 print("using bake settings")
 
@@ -14,12 +14,12 @@ STORAGES = {
 
 DISABLE_APPS = ["django.contrib.admin", "debug_toolbar"]
 
-INSTALLED_APPS = [x for x in INSTALLED_APPS if x not in DISABLE_APPS]
+INSTALLED_APPS = [x for x in INSTALLED_APPS if x not in DISABLE_APPS]  # noqa: F405
 
 DATABASES = {
     "memory_source": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "databases", "db.sqlite3"),
+        "NAME": os.path.join(BASE_DIR, "databases", "db.sqlite3"),  # noqa: F405
     },
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

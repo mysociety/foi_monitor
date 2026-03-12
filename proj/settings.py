@@ -1,7 +1,7 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from conf.config import *  # stores database and key outside repo
+from conf.config import *  # noqa: F403  # stores database and key outside repo
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
@@ -82,7 +82,7 @@ INSTALLED_APPS = [
     "pipeline",
     "research_common.apps.ResearchCommonConfig",
     "debug_toolbar",
-    CORE_APP_NAME,
+    CORE_APP_NAME,  # noqa: F405
 ]
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -134,8 +134,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = "/sites/" + SITE_SLUG + "/static/"
-MEDIA_URL = "/sites/" + SITE_SLUG + "/media/"
+STATIC_URL = "/sites/" + SITE_SLUG + "/static/"  # noqa: F405
+MEDIA_URL = "/sites/" + SITE_SLUG + "/media/"  # noqa: F405
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -155,7 +155,7 @@ PIPELINE = {
     "DISABLE_WRAPPER": True,
     "COMPILERS": ("pipeline.compilers.sass.SASSCompiler",),
     "SHOW_ERRORS_INLINE": False,
-    "SASS_BINARY": SASSC_LOCATION,
+    "SASS_BINARY": SASSC_LOCATION,  # noqa: F405
 }
 
 EXPORT_CHARTS = False

@@ -1,1 +1,1 @@
-from .base import AdapterRegistry
+from .base import AdapterRegistry as AdapterRegistry

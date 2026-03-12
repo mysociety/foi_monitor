@@ -97,8 +97,8 @@ class FoisaAdapter(GenericAdapter):
         nh = []
         done_foi = False
         for h in df.columns:
-            l = h.lower().strip().replace(".1", "")
-            if l == "personal data of the applicant":
+            header = h.lower().strip().replace(".1", "")
+            if header == "personal data of the applicant":
                 if done_foi:
                     nh.append("Personal data of the applicant - EIR")
                 else:
