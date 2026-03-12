@@ -36,3 +36,4 @@ static/sass
 *.sqlite3
 .env
 bake_dir/
+static/admin
