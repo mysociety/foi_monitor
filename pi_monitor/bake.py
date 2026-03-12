@@ -43,4 +43,3 @@ class BakeManager:
     def amend_settings(self, **kwargs):
         """Amend settings for baking."""
         settings.IS_LIVE = True
-        settings.EXPORT_CHARTS = True

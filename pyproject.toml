@@ -13,7 +13,6 @@ useful-decorator = {git = "https://github.com/ajparsons/useful-decorator", rev =
 django-pipeline-csscompressor = {git = "https://github.com/mysociety/django-pipeline-csscompressor"}
 # PyPI dependencies
 altair = "*"
-altair-saver = "*"
 dirsync = "*"
 django-bootstrap-form = "*"
 django-debug-toolbar = "^4.0"
